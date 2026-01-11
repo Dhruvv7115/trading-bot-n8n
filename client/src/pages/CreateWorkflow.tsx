@@ -13,8 +13,7 @@ import "@xyflow/react/dist/style.css";
 import TriggerSheet from "@/components/TriggerSheet";
 import Time from "@/components/nodes/triggers/Time";
 import Price from "@/components/nodes/triggers/Price";
-import type { PriceNodeMetaData } from "@/components/trigger-metadata/PriceMetaData";
-import type { TimeNodeMetaData } from "@/components/trigger-metadata/TimeMetaData";
+import type { PriceNodeMetaData, TimeNodeMetaData } from "@/types/triggers.types";
 
 export type TriggerType = "time" | "price";
 export type ActionType = "hyperliquid" | "backpack" | "lighter";
@@ -31,9 +30,10 @@ interface NodeType {
 	};
 }
 const nodeTypes = {
-	time: Time,
-	price: Price,
+  "time": Time,
+	"price": Price,
 };
+
 
 export default function CreateWorkflowPage() {
 	const [nodes, setNodes] = useState<NodeType[]>([]);

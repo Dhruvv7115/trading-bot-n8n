@@ -1,11 +1,7 @@
 import { Input } from "../ui/input";
-import AssetSelect, { type AssetType } from "./AssetSelect";
+import AssetSelect from "./AssetSelect";
 import { Label } from "../ui/label";
-export interface TimeNodeMetaData {
-	time: number;
-	asset: AssetType;
-	action: "buy" | "sell";
-}
+import type { TimeNodeMetaData } from "@/types/triggers.types";
 
 export default function TimeMetaData({
 	metaData,
@@ -26,9 +22,7 @@ export default function TimeMetaData({
 					placeholder="Enter time in seconds"
 					value={metaData?.time || ""}
 					onChange={(e) =>
-						setMetaData((m: TimeNodeMetaData) => {
-							return { ...m, time: parseInt(e.target.value) };
-						})
+						setMetaData({ ...metaData, time: parseInt(e.target.value) })
 					}
 				></Input>
 			</div>

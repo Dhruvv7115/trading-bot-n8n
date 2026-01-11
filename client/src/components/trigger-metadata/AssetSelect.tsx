@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 
-export type AssetType = "SOL" | "ETH" | "BTC";
+import type { AssetType } from "@/types/asset.types";
 const SUPPORTED_ASSETS: AssetType[] = ["SOL", "ETH", "BTC"];
 
 export default function AssetSelect() {

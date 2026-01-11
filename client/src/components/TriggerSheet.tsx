@@ -17,37 +17,25 @@ import {
 	SelectGroup,
 } from "@/components/ui/select";
 import { IconPlus } from "@tabler/icons-react";
-import { useState } from "react";
-import type { MetaData, TriggerType } from "@/pages/CreateWorkflow";
+import { useEffect, useState } from "react";
+import { TRIGGER_CONFIGS, SUPPORTED_TRIGGERS } from "@/configs/triggers.config";
 import PriceMetaData from "./trigger-metadata/PriceMetaData";
 import TimeMetaData from "./trigger-metadata/TimeMetaData";
-
-const SUPPORTED_TRIGGERS = [
-	{
-		id: "time",
-		title: "Time Trigger",
-		description: "Triggers every time a certain amount of time has passed.",
-	},
-	{
-		id: "price",
-		title: "Price Trigger",
-		description:
-			"Triggers when the price of a certain asset reaches a certain value.",
-	},
-];
+import type { PriceNodeMetaData, TimeNodeMetaData, TriggerMetaData, TriggerType } from "@/types/triggers.types";
 
 export default function TriggerSheet({
 	onTriggerSelect,
 }: {
-	onTriggerSelect: (trigger: TriggerType, metaData: MetaData) => void;
+	onTriggerSelect: (trigger: TriggerType, metaData: TriggerMetaData) => void;
 }) {
 	const [selectedTrigger, setSelectedTrigger] = useState<TriggerType>("time");
-	const [metaData, setMetaData] = useState<MetaData>({
-		time: 60,
-		asset: "SOL",
-		action: "buy",
-	});
-
+	const [metaData, setMetaData] = useState<TriggerMetaData>(
+		TRIGGER_CONFIGS.time.defaultMetaData,
+	);
+	useEffect(() => {
+		// Automatically get the right default metadata
+		setMetaData(TRIGGER_CONFIGS[selectedTrigger]?.defaultMetaData);
+	}, [selectedTrigger]);
 	return (
 		<Sheet>
 			<SheetTrigger asChild>
@@ -74,10 +62,7 @@ export default function TriggerSheet({
 					>
 						<SelectTrigger className="w-full">
 							<SelectValue placeholder="Select a trigger">
-								{selectedTrigger
-									? SUPPORTED_TRIGGERS.find((t) => t.id === selectedTrigger)
-											?.title
-									: null}
+								{TRIGGER_CONFIGS[selectedTrigger]?.title}
 							</SelectValue>
 						</SelectTrigger>
 						<SelectContent>
@@ -86,7 +71,6 @@ export default function TriggerSheet({
 									<SelectItem
 										key={id}
 										value={id}
-										className="flex-row gap-2"
 									>
 										<div className="flex-row gap-2">
 											<div>{title}</div>
@@ -101,21 +85,29 @@ export default function TriggerSheet({
 					</Select>
 					{selectedTrigger === "time" && (
 						<TimeMetaData
-							metaData={metaData}
+							metaData={metaData as TimeNodeMetaData}
 							setMetaData={setMetaData}
 						/>
 					)}
 					{selectedTrigger === "price" && (
 						<PriceMetaData
-							metaData={metaData}
+							metaData={metaData as PriceNodeMetaData}
 							setMetaData={setMetaData}
 						/>
 					)}
+					{/* {selectedTrigger === "volume" && (
+						<VolumeMetaData
+							metaData={metaData}
+							setMetaData={setMetaData}
+						/>
+					)} */}
 				</div>
 				<SheetFooter>
 					<Button
 						type="submit"
-						onClick={() => onTriggerSelect(selectedTrigger, metaData)}
+						onClick={() => {
+							onTriggerSelect(selectedTrigger, metaData);
+						}}
 					>
 						Create Trigger
 					</Button>
