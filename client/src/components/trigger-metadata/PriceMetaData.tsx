@@ -12,7 +12,7 @@ export default function PriceMetaData({
 }) {
 	return (
 		<div className="w-full flex flex-col items-center justify-center gap-8">
-			<AssetSelect />
+			<AssetSelect metaData={metaData} setMetaData={setMetaData} />
 			<div className="w-full">
 				<Label className="text-neutral-600 mb-2 ml-0.5">
 					Price at which you want to trigger the action

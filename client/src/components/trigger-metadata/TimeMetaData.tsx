@@ -12,7 +12,7 @@ export default function TimeMetaData({
 }) {
 	return (
 		<div className="flex flex-col items-center justify-center gap-8">
-			<AssetSelect />
+			<AssetSelect metaData={metaData} setMetaData={setMetaData} />
 			<div className="w-full">
 				<Label className="text-neutral-600 mb-2 ml-0.5">
 					Time Interval after which you want to buy the asset

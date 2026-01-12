@@ -8,19 +8,32 @@ import {
 	SelectValue,
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
-
+import { SUPPORTED_ASSETS } from "@/configs/assets.config";
 import type { AssetType } from "@/types/asset.types";
-const SUPPORTED_ASSETS: AssetType[] = ["SOL", "ETH", "BTC"];
+import type { TriggerMetaData } from "@/types/triggers.types";
 
-export default function AssetSelect() {
+export default function AssetSelect<T extends TriggerMetaData>({
+	metaData,
+	setMetaData,
+}: {
+	metaData: T;
+	setMetaData: (data: T) => void;
+}) {
 	return (
 		<div className="w-full">
 			<Label className="text-neutral-600 mb-2 ml-0.5">
 				Select the Asset you want to buy
 			</Label>
-			<Select>
+			<Select
+				onValueChange={(value) =>
+					setMetaData({ ...metaData, asset: value as AssetType })
+				}
+				value={metaData.asset}
+			>
 				<SelectTrigger className="w-full">
-					<SelectValue placeholder="Select an Asset"></SelectValue>
+					<SelectValue placeholder="Select an Asset">
+						{metaData.asset}
+					</SelectValue>
 				</SelectTrigger>
 				<SelectContent>
 					<SelectGroup>
