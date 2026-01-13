@@ -1,7 +1,7 @@
 import type { PriceNodeMetaData } from "@/types/triggers.types";
 import AssetSelect from "./AssetSelect";
-import { Label } from "../ui/label";
-import { Input } from "../ui/input";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 
 export default function PriceMetaData({
 	metaData,

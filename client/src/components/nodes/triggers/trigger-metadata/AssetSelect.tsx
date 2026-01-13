@@ -32,7 +32,7 @@ export default function AssetSelect<T extends TriggerMetaData>({
 			>
 				<SelectTrigger className="w-full">
 					<SelectValue placeholder="Select an Asset">
-						{metaData.asset}
+						{metaData?.asset || ""}
 					</SelectValue>
 				</SelectTrigger>
 				<SelectContent>

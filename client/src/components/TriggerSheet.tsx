@@ -19,9 +19,14 @@ import {
 import { IconPlus } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
 import { TRIGGER_CONFIGS, SUPPORTED_TRIGGERS } from "@/configs/triggers.config";
-import PriceMetaData from "./trigger-metadata/PriceMetaData";
-import TimeMetaData from "./trigger-metadata/TimeMetaData";
-import type { PriceNodeMetaData, TimeNodeMetaData, TriggerMetaData, TriggerType } from "@/types/triggers.types";
+import PriceMetaData from "./nodes/triggers/trigger-metadata/PriceMetaData";
+import TimeMetaData from "./nodes/triggers/trigger-metadata/TimeMetaData";
+import type {
+	PriceNodeMetaData,
+	TimeNodeMetaData,
+	TriggerMetaData,
+	TriggerType,
+} from "@/types/triggers.types";
 
 export default function TriggerSheet({
 	onTriggerSelect,
@@ -37,8 +42,8 @@ export default function TriggerSheet({
 		setMetaData(TRIGGER_CONFIGS[selectedTrigger]?.defaultMetaData);
 	}, [selectedTrigger]);
 	return (
-		<Sheet>
-			<SheetTrigger asChild>
+		<Sheet open>
+			{/* <SheetTrigger asChild>
 				<Button
 					variant="outline"
 					size="icon-lg"
@@ -46,7 +51,7 @@ export default function TriggerSheet({
 				>
 					<IconPlus className="size-20 text-neutral-500" />
 				</Button>
-			</SheetTrigger>
+			</SheetTrigger> */}
 			<SheetContent>
 				<SheetHeader>
 					<SheetTitle>Select Trigger Type</SheetTitle>

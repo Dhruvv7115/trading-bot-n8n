@@ -1,6 +1,6 @@
-import { Input } from "../ui/input";
+import { Input } from "@/components/ui/input";
 import AssetSelect from "./AssetSelect";
-import { Label } from "../ui/label";
+import { Label } from "@/components/ui/label";
 import type { TimeNodeMetaData } from "@/types/triggers.types";
 
 export default function TimeMetaData({
