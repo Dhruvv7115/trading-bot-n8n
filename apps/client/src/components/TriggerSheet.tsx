@@ -16,9 +16,11 @@ import {
 	SelectValue,
 	SelectGroup,
 } from "@/components/ui/select";
-import { IconPlus } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
-import { TRIGGER_CONFIGS, SUPPORTED_TRIGGERS } from "@/configs/triggers.config";
+import {
+	TRIGGER_CONFIGS,
+	SUPPORTED_TRIGGERS,
+} from "common/configs";
 import PriceMetaData from "./nodes/triggers/trigger-metadata/PriceMetaData";
 import TimeMetaData from "./nodes/triggers/trigger-metadata/TimeMetaData";
 import type {
@@ -26,7 +28,7 @@ import type {
 	TimeNodeMetaData,
 	TriggerMetaData,
 	TriggerType,
-} from "@/types/triggers.types";
+} from "common/types";
 
 export default function TriggerSheet({
 	onTriggerSelect,

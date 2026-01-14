@@ -1,4 +1,3 @@
-import React from "react";
 import {
 	Select,
 	SelectContent,
@@ -8,9 +7,9 @@ import {
 	SelectValue,
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
-import { SUPPORTED_ASSETS } from "@/configs/assets.config";
-import type { AssetType } from "@/types/asset.types";
-import type { TriggerMetaData } from "@/types/triggers.types";
+import { SUPPORTED_ASSETS } from "common/configs";
+import type { AssetType } from "common/types";
+import type { TriggerMetaData } from "common/types";
 
 export default function AssetSelect<T extends TriggerMetaData>({
 	metaData,

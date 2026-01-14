@@ -1,4 +1,4 @@
-import type { ActionType, TradingMetaData } from "@/types/actions.types";
+import type { ActionType, TradingMetaData } from "common/types";
 import { Handle, Position } from "@xyflow/react";
 
 export default function Backpack({

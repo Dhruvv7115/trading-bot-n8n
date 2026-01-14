@@ -1,14 +1,12 @@
 import { Handle, Position } from "@xyflow/react";
+import type { PriceNodeMetaData } from "common/types";
 
 export default function Price({
 	data,
 	isConnectable,
 }: {
 	data: {
-		metaData: {
-			price: number;
-			asset: string;
-		};
+		metaData: PriceNodeMetaData
 	};
 	isConnectable: boolean;
 }) {

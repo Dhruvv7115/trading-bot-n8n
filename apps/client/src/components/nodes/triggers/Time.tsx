@@ -1,4 +1,4 @@
-import type { TimeNodeMetaData } from "@/types/triggers.types";
+import type { TimeNodeMetaData } from "common/types";
 import { Handle, Position } from "@xyflow/react";
 
 export default function Time({

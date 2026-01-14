@@ -1,4 +1,4 @@
-import type { TradingMetaData } from "@/types/actions.types";
+import type { TradingMetaData } from "common/types";
 import {
 	Select,
 	SelectContent,
@@ -7,10 +7,10 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
-import { SUPPORTED_ASSETS } from "@/configs/assets.config";
+import { SUPPORTED_ASSETS } from "common/configs";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import type { AssetType } from "@/types/asset.types";
+import type { AssetType } from "common/types";
 
 export default function ExchangeMetaData({
 	metaData,

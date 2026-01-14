@@ -1,4 +1,4 @@
-import type { PriceNodeMetaData } from "@/types/triggers.types";
+import type { PriceNodeMetaData } from "common/types";
 import AssetSelect from "./AssetSelect";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";

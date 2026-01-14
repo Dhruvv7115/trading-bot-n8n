@@ -16,8 +16,8 @@ import {
 	SelectGroup,
 } from "@/components/ui/select";
 import { useState } from "react";
-import { SUPPORTED_ACTIONS } from "@/configs/actions.config";
-import type { ActionType, TradingMetaData } from "@/types/actions.types";
+import { SUPPORTED_ACTIONS } from "common/configs";
+import type { ActionType, TradingMetaData } from "common/types";
 import ExchangeMetaData from "./nodes/actions/action-metadata/ExchangeMetaData";
 
 export default function ActionSheet({
