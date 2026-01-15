@@ -22,16 +22,7 @@ import ActionSheet from "@/components/ActionSheet";
 import Hyperliquid from "@/components/nodes/actions/Hyperliquid";
 import Lighter from "@/components/nodes/actions/Lighter";
 import Backpack from "@/components/nodes/actions/Backpack";
-
-interface NodeType {
-	id: string;
-	position: { x: number; y: number };
-	type: TriggerType | ActionType;
-	data: {
-		metaData: TriggerMetaData | TradingMetaData;
-		label: string;
-	};
-}
+import { type NodeType } from "common/types";
 
 const nodeTypes = {
 	time: Time,
@@ -76,6 +67,7 @@ export default function CreateWorkflowPage() {
 					y: 0,
 				},
 				type: trigger,
+				kind: "TRIGGER",
 				data: {
 					metaData: metaData,
 					label: trigger.charAt(0).toUpperCase() + trigger.slice(1),
@@ -96,10 +88,11 @@ export default function CreateWorkflowPage() {
 			toast.error("Please enter the quantity of the symbol");
 			return;
 		}
-		const newNode = {
+		const newNode: NodeType = {
 			id: `${action}-${nodes.length + 1}`,
 			position: selectAction?.position as { x: number; y: number },
 			type: action,
+			kind: "ACTION",
 			data: {
 				metaData,
 				label: action.charAt(0).toUpperCase() + action.slice(1),
