@@ -7,7 +7,8 @@ export const authMiddleware = async (
 	res: Response,
 	next: NextFunction,
 ) => {
-	const token = req.headers["authorization"];
+	const token = req.headers["authorization"] as string;
+
 	if (!token) {
 		res.status(400).json({
 			message: "User is not logged in.",
@@ -25,6 +26,7 @@ export const authMiddleware = async (
 		}
 
 		req.userId = decoded.id;
+		next();
 	} catch (error) {
 		console.log(error);
 		res.status(500).json({

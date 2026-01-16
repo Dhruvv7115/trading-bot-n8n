@@ -38,23 +38,26 @@ export const CreateWorkflowSchema = z.object({
 	// ),
 });
 
-export const UpdateWorkflowSchema = z.object({
-	id: z.string(),
+export const UpdateWorkflowSchemaBody = z.object({
 	name: z.string().min(3).max(50).optional(),
 	description: z.string().min(3).max(100).optional(),
 	active: z.boolean().optional(),
 	tags: z.array(string()).optional(),
 });
 
-export const GetSingleWorkflowSchema = z.object({
+export const UpdateWorkflowSchemaParams = z.object({
 	id: z.string(),
 });
 
-export const DeleteWorkflowSchema = z.object({
+export const GetWorkflowByIdSchema = z.object({
 	id: z.string(),
 });
 
-export const CreateNodeBody = z.object({
+export const DeleteWorkflowSchemaParams = z.object({
+	id: z.string(),
+});
+
+export const CreateNodeSchemaBody = z.object({
 	id: z.string(),
 	title: z.string(),
 	description: z.string(),
@@ -70,6 +73,16 @@ export const CreateNodeBody = z.object({
 	}),
 });
 
-export const CreateNodeParams = z.object({
+export const CreateNodeSchemaParams = z.object({
+	workflowId: z.string(),
+});
+
+export const CreateEdgeSchemaBody = z.object({
+	source: z.string(),
+	target: z.string(),
+	id: z.string(),
+});
+
+export const CreateEdgeSchemaParams = z.object({
 	workflowId: z.string(),
 });

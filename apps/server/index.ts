@@ -6,14 +6,17 @@ import express, {
 } from "express";
 import mongoose, { isValidObjectId } from "mongoose";
 import {
-	CreateNodeBody,
-	CreateNodeParams,
+	CreateEdgeSchemaBody,
+	CreateEdgeSchemaParams,
+	CreateNodeSchemaBody,
+	CreateNodeSchemaParams,
 	CreateWorkflowSchema,
-	DeleteWorkflowSchema,
-	GetSingleWorkflowSchema,
+	DeleteWorkflowSchemaParams,
+	GetWorkflowByIdSchema,
 	SigninSchema,
 	SignupSchema,
-	UpdateWorkflowSchema,
+	UpdateWorkflowSchemaBody,
+	UpdateWorkflowSchemaParams,
 } from "common/types";
 import { Edge, Node, User, Workflow } from "db/schemas";
 import bcrypt from "bcryptjs";
@@ -152,11 +155,11 @@ app.post("/workflows", authMiddleware, async (req, res) => {
 
 		res.status(200).json({
 			message: "Workflow created successfully!!!",
-			workflowId: newWorkflow._id,
+			workflow: newWorkflow,
 		});
 		return;
-	} catch (error) {
-		console.log(error);
+	} catch (error: any) {
+		console.log(error.message);
 		res.status(500).json({
 			message: "Something went bonkersss!!!",
 		});
@@ -165,18 +168,28 @@ app.post("/workflows", authMiddleware, async (req, res) => {
 });
 
 // update workflow route
-app.patch("/workflows/:workflowId", authMiddleware, async (req, res) => {
-	const { success, data } = UpdateWorkflowSchema.safeParse(req.body);
-	if (!success) {
+app.patch("/workflows/:id", authMiddleware, async (req, res) => {
+	const body = UpdateWorkflowSchemaBody.safeParse(req.body);
+	const params = UpdateWorkflowSchemaParams.safeParse(req.params);
+
+	if (!body.success) {
 		res.status(400).json({
 			message: "Invalid request.",
 		});
 		return;
 	}
+	const { data } = body;
+	if (!params.success) {
+		res.status(400).json({
+			message: "Invalid workflow id.",
+		});
+		return;
+	}
+	const workflowId = params.data.id;
 
 	try {
 		const workflow = await Workflow.findOne({
-			_id: data.id,
+			_id: workflowId,
 		});
 
 		if (!workflow) {
@@ -195,13 +208,13 @@ app.patch("/workflows/:workflowId", authMiddleware, async (req, res) => {
 
 		const updatedWorkflow = await Workflow.findOneAndUpdate(
 			{
-				_id: data.id,
+				_id: workflowId,
 			},
 			{
 				name: data?.name,
 				description: data?.description,
 				tags: data?.tags,
-				active: data.active,
+				active: data?.active,
 			},
 			{
 				new: true,
@@ -254,9 +267,9 @@ app.get("/workflows", authMiddleware, async (req, res) => {
 });
 
 // get workflow by id
-app.get("/workflows/:workflowId", authMiddleware, async (req, res) => {
-	const userId = req.userId!;
-	const { success, data } = GetSingleWorkflowSchema.safeParse(req.body);
+app.get("/workflows/:id", authMiddleware, async (req, res) => {
+	const userId = req.userId;
+	const { success, data } = GetWorkflowByIdSchema.safeParse(req.params);
 	if (!success) {
 		res.status(400).json({
 			message: "Invalid workflow id.",
@@ -265,7 +278,7 @@ app.get("/workflows/:workflowId", authMiddleware, async (req, res) => {
 	}
 
 	try {
-		const workflow = await Workflow.findOne({ id: data.id });
+		const workflow = await Workflow.findOne({ _id: data.id }).lean();
 		if (!workflow) {
 			res.status(400).json({
 				message: "Workflow not found.",
@@ -285,11 +298,7 @@ app.get("/workflows/:workflowId", authMiddleware, async (req, res) => {
 
 		res.status(200).json({
 			message: "Workflow found successfully!!!",
-			workflow: {
-				...workflow,
-				nodes,
-				edges,
-			},
+			workflow: { ...workflow, nodes, edges },
 		});
 		return;
 	} catch (error) {
@@ -302,8 +311,8 @@ app.get("/workflows/:workflowId", authMiddleware, async (req, res) => {
 });
 
 // delete workflow
-app.delete("/workflows/:workflowId", authMiddleware, async (req, res) => {
-	const { success, data } = DeleteWorkflowSchema.safeParse(req.body);
+app.delete("/workflows/:id", authMiddleware, async (req, res) => {
+	const { success, data } = DeleteWorkflowSchemaParams.safeParse(req.params);
 	if (!success) {
 		res.status(400).json({
 			message: "Invalid workflow id.",
@@ -346,8 +355,8 @@ app.delete("/workflows/:workflowId", authMiddleware, async (req, res) => {
 // node routes
 // create a node
 app.post("/nodes/:workflowId", authMiddleware, async (req, res) => {
-	const body = CreateNodeBody.safeParse(req.body);
-	const params = CreateNodeParams.safeParse(req.params);
+	const body = CreateNodeSchemaBody.safeParse(req.body);
+	const params = CreateNodeSchemaParams.safeParse(req.params);
 	if (!body.success) {
 		res.status(400).json({
 			message: "Invalid node data.",
@@ -408,14 +417,65 @@ app.post("/nodes/:workflowId", authMiddleware, async (req, res) => {
 	}
 });
 
-// update node 
+// update node
 // delete node
 
-// edges routes 
+// edges routes
 // create a edge
-// update edge 
-// delete edge
+app.post("/edges/:workflowId", authMiddleware, async (req, res) => {
+	const body = CreateEdgeSchemaBody.safeParse(req.body);
+	const params = CreateEdgeSchemaParams.safeParse(req.params);
+	if (!body.success) {
+		res.status(400).json({
+			message: "Invalid node data.",
+		});
+		return;
+	}
+	const { data } = body;
+	if (!params.success) {
+		res.status(400).json({
+			message: "Invalid workflow id.",
+		});
+		return;
+	}
+	const { workflowId } = params.data;
+	if (!isValidObjectId(workflowId)) {
+		res.status(400).json({
+			message: "Invalid workflow id.",
+		});
+		return;
+	}
 
+	try {
+		const edge = await Edge.create({
+			source: data.source,
+			target: data.target,
+			id: data.id,
+		});
+
+		if (!edge) {
+			res.status(500).json({
+				message: "Something went wrong while creating the edge.",
+			});
+			return;
+		}
+
+		res.status(200).json({
+			message: "Edge created successfully!!!",
+			edge,
+		});
+		return;
+	} catch (error) {
+		console.log(error);
+		res.status(500).json({
+			message: "Something went bonkersss!!!",
+		});
+		return;
+	}
+});
+
+// update edge
+// delete edge
 
 // executions routes
 
