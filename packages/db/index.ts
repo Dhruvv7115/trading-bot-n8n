@@ -9,32 +9,29 @@ const userSchema = new Schema({
 	password: {
 		type: String,
 		required: true,
+		select: false,
 	},
 });
 
-const edgeSchema = new Schema(
-	{
-		id: {
-			type: String,
-			required: true,
-		},
-		source: {
-			type: String,
-			required: true,
-		},
-		target: {
-			type: String,
-			required: true,
-		},
-		workflowId: {
-			type: Schema.Types.ObjectId,
-			ref: "Workflow",
-		},
+const edgeSchema = new Schema({
+	id: {
+		type: String,
+		required: true,
 	},
-	{
-		_id: false,
+	source: {
+		type: String,
+		required: true,
 	},
-);
+	target: {
+		type: String,
+		required: true,
+	},
+	workflowId: {
+		type: Schema.Types.ObjectId,
+		ref: "Workflow",
+		required: true,
+	},
+});
 
 const positionSchema = new Schema(
 	{
@@ -52,83 +49,71 @@ const positionSchema = new Schema(
 	},
 );
 
-const nodeDataSchema = new Schema(
-	{
-		metaData: {
-			type: Schema.Types.Mixed,
-			required: true,
-		},
-		label: {
-			type: String,
-			required: true,
-		},
-	},
-	{
-		_id: false,
-	},
-);
-
 const credentialSchema = new Schema(
 	{
-		name: {
-			// "hyperliquid", "lighter", etc.
-			type: String,
-			required: true,
-		},
+		name: String,
 		type: {
-			// "api_key", "password", etc.
 			type: String,
+			enum: ["api_key", "password", "oauth"],
 			required: true,
 		},
 		data: {
-			type: Schema.Types.Mixed,
+			type: Schema.Types.Mixed, // encrypted
 			required: true,
+			select: false,
 		},
 		userId: {
 			type: Schema.Types.ObjectId,
 			ref: "User",
+			required: true,
+			index: true,
 		},
 	},
 	{
-		_id: false,
+		timestamps: true,
 	},
 );
 
-const nodeSchema = new Schema(
-	{
-		id: {
-			type: String,
-			required: true,
-		},
-		workflowId: {
-			type: Schema.Types.ObjectId,
-			ref: "Workflow",
-		},
-		title: {
-			type: String,
-			required: true,
-		},
-		description: {
-			type: String,
-			required: true,
-		},
-		type: {
-			type: String,
-			enum: ["hyperliquid", "lighter", "backpack", "time", "price"],
-			require: true,
-		},
-		position: positionSchema,
-		data: nodeDataSchema,
+const nodeSchema = new Schema({
+	id: {
+		type: String,
+		required: true,
+	},
+	workflowId: {
+		type: Schema.Types.ObjectId,
+		ref: "Workflow",
+		required: true,
+	},
+	title: {
+		type: String,
+		required: true,
+	},
+	description: {
+		type: String,
+		required: true,
+	},
+	type: {
+		type: String,
+		enum: ["hyperliquid", "lighter", "backpack", "time", "price"],
+		required: true,
+	},
+	position: positionSchema,
+	data: {
+		metaData: Schema.Types.Mixed,
 		kind: {
 			type: String,
-			enum: ["trigger", "action"],
+			enum: ["TRIGGER", "ACTION"],
 			required: true,
 		},
 	},
-	{
-		_id: false,
-	},
-);
+	credentials: [
+		{
+			type: Schema.Types.ObjectId,
+			ref: "Credential",
+			required: false,
+		},
+	],
+});
 
 const workflowSchema = new Schema({
 	name: {
@@ -141,35 +126,42 @@ const workflowSchema = new Schema({
 	userId: {
 		type: Schema.Types.ObjectId,
 		ref: "User",
+		index: true,
 	},
 });
 
-const executionSchema = new Schema({
-	workflowId: {
-		type: Schema.Types.ObjectId,
-		ref: "Workflow",
+const executionSchema = new Schema(
+	{
+		workflowId: {
+			type: Schema.Types.ObjectId,
+			ref: "Workflow",
+			required: true,
+		},
+		status: {
+			type: String,
+			enum: ["SUCCESS", "FAILURE", "PENDING"],
+			required: true,
+		},
+		endTime: Date,
+		failedNode: {
+			type: Schema.Types.ObjectId,
+			ref: "Node",
+		},
 	},
-	status: {
-		type: String,
-		enum: ["SUCCESS", "FAILURE", "PENDING"],
-		required: true,
+	{
+		timestamps: true,
 	},
-	startTime: {
-		type: Date,
-		default: Date.now(),
-	},
-	endTime: {
-		type: Date,
-		required: true,
-	},
-	failedNode: {
-		type: Schema.Types.ObjectId,
-		ref: "Node",
-	},
-});
+);
 
+//indices
+executionSchema.index({ workflowId: 1, status: 1, createdAt: -1 });
+edgeSchema.index({ workflowId: 1, id: 1 }, { unique: true });
+nodeSchema.index({ workflowId: 1, id: 1 }, { unique: true });
+
+// models
 export const User = mongoose.model("User", userSchema);
 export const Workflow = mongoose.model("Workflow", workflowSchema);
 export const Edge = mongoose.model("Edge", edgeSchema);
 export const Node = mongoose.model("Node", nodeSchema);
+export const Credential = mongoose.model("Credential", credentialSchema);
 export const Execution = mongoose.model("Execution", executionSchema);
