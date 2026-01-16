@@ -8,11 +8,12 @@ import {
 	CreateWorkflowSchema,
 	DeleteWorkflowSchemaParams,
 	EdgeParamsSchema,
+	GetNodeSchemaParams,
 	GetWorkflowByIdSchema,
 	SigninSchema,
 	SignupSchema,
-	UpdateDeleteGetNodeSchemaParams,
 	UpdateNodeSchemaBody,
+	UpdateNodeSchemaParams,
 	UpdateWorkflowSchemaBody,
 	UpdateWorkflowSchemaParams,
 } from "common/types";
@@ -431,7 +432,7 @@ app.post("/nodes/:workflowId", authMiddleware, async (req, res) => {
 // ========== UPDATE NODE ==========
 app.put("/nodes/:workflowId/:nodeId", authMiddleware, async (req, res) => {
 	const body = UpdateNodeSchemaBody.safeParse(req.body);
-	const params = UpdateDeleteGetNodeSchemaParams.safeParse(req.params);
+	const params = UpdateNodeSchemaParams.safeParse(req.params);
 
 	if (!body.success) {
 		res.status(400).json({
@@ -536,7 +537,7 @@ app.get("/nodes/:workflowId", authMiddleware, async (req, res) => {
 
 // ========== GET SINGLE NODE BY ID ==========
 app.get("/nodes/:workflowId/:nodeId", authMiddleware, async (req, res) => {
-	const params = UpdateDeleteGetNodeSchemaParams.safeParse(req.params);
+	const params = GetNodeSchemaParams.safeParse(req.params);
 
 	if (!params.success) {
 		res.status(400).json({
@@ -588,7 +589,7 @@ app.get("/nodes/:workflowId/:nodeId", authMiddleware, async (req, res) => {
 
 // ========== DELETE NODE ==========
 app.delete("/nodes/:workflowId/:nodeId", authMiddleware, async (req, res) => {
-	const params = UpdateDeleteGetNodeSchemaParams.safeParse(req.params);
+	const params = UpdateNodeSchemaParams.safeParse(req.params);
 
 	if (!params.success) {
 		res.status(400).json({
@@ -774,4 +775,3 @@ app.get(
 );
 app.post("/credentials", authMiddleware, async (req, res) => {});
 app.get("/credentials", authMiddleware, async (req, res) => {});
-app.get("/nodes", authMiddleware, async (req, res) => {});
