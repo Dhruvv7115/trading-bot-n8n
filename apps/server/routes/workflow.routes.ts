@@ -1,5 +1,4 @@
 import { Router } from "express";
-import { authMiddleware } from "../middleware";
 import {
 	createWorkflowController,
 	deleteWorkflowController,
@@ -12,7 +11,7 @@ const router = Router();
 
 router
 	.route("/")
-	.post(authMiddleware, createWorkflowController)
+	.post(createWorkflowController)
 	.get(getAllWorkflowsController);
 
 router

@@ -39,11 +39,19 @@ app.use("/api/v1/auth", authRoutes);
 
 // ------------- WORKFLOW ROUTES -------------
 import workflowRoutes from "./routes/workflow.routes.ts";
-app.use("/api/v1/workflow", workflowRoutes);
+app.use("/api/v1/workflow", authMiddleware, workflowRoutes);
 
 // ------------- NODE ROUTES -------------
 import nodeRoutes from "./routes/node.routes.ts";
-app.use("/api/v1/node", nodeRoutes);
+app.use("/api/v1/node", authMiddleware, nodeRoutes);
+
+// ------------- EDGE ROUTES -------------
+import edgeRoutes from "./routes/edge.routes.ts";
+app.use("/api/v1/edge", authMiddleware, edgeRoutes);
+
+// ------------- EXECUTION ROUTES -------------
+import executionRoutes from "./routes/execution.routes.ts";
+app.use("/api/v1/execution", authMiddleware, executionRoutes);
 
 connectToMongoDB().then(() =>
 	app.listen(PORT, () => {
@@ -52,189 +60,6 @@ connectToMongoDB().then(() =>
 );
 
 // node routes
-// ========== CREATE NODE ==========
-app.post("/nodes/:workflowId", authMiddleware, async (req, res) => {
-	const body = CreateNodeSchemaBody.safeParse(req.body);
-	const params = CreateNodeSchemaParams.safeParse(req.params);
-	if (!body.success) {
-		res.status(400).json({
-			message: "Invalid node data.",
-		});
-		return;
-	}
-	const { data } = body;
-	if (!params.success) {
-		res.status(400).json({
-			message: "Invalid workflow id.",
-		});
-		return;
-	}
-	const { workflowId } = params.data;
-	if (!isValidObjectId(workflowId)) {
-		res.status(400).json({
-			message: "Invalid workflow id.",
-		});
-		return;
-	}
-
-	try {
-		const workflow = await Workflow.findOne({ _id: workflowId });
-		if (!workflow) {
-			res.status(400).json({
-				message: "Workflow not found!",
-			});
-			return;
-		}
-		if (req.userId !== workflow.userId) {
-			res.status(400).json({
-				message:
-					"You're unauthorised to create a node on someone else's workflow.",
-			});
-			return;
-		}
-		const node = await Node.create({
-			id: data.id,
-			title: data.title,
-			description: data.description,
-			type: data.type,
-			data: {
-				kind: data.data.kind,
-				metaData: data.data.metaData,
-			},
-			position: {
-				x: data.position.x,
-				y: data.position.y,
-			},
-			workflowId,
-		});
-
-		if (!node) {
-			res.status(500).json({
-				message: "Something went wrong while creating the node.",
-			});
-			return;
-		}
-
-		res.status(200).json({
-			message: "Node created successfully!!!",
-			node,
-		});
-		return;
-	} catch (error) {
-		console.log(error);
-		res.status(500).json({
-			message: "Something went bonkersss!!!",
-		});
-		return;
-	}
-});
-
-// ========== UPDATE NODE ==========
-app.put("/nodes/:workflowId/:nodeId", authMiddleware, async (req, res) => {
-	const body = UpdateNodeSchemaBody.safeParse(req.body);
-	const params = UpdateNodeSchemaParams.safeParse(req.params);
-
-	if (!body.success) {
-		res.status(400).json({
-			message: "Invalid node data.",
-			errors: body.error.message,
-		});
-		return;
-	}
-
-	if (!params.success) {
-		res.status(400).json({
-			message: "Invalid parameters.",
-			errors: params.error.message,
-		});
-		return;
-	}
-
-	const { data } = body;
-	const { workflowId, nodeId } = params.data;
-
-	try {
-		// Verify workflow ownership
-		const workflow = await Workflow.findOne({
-			_id: workflowId,
-			userId: req.userId,
-		});
-
-		if (!workflow) {
-			res.status(404).json({
-				message: "Workflow not found or unauthorized.",
-			});
-			return;
-		}
-
-		const updatedNode = await Node.findOneAndUpdate(
-			{ id: nodeId, workflowId },
-			{ $set: data },
-			{ new: true },
-		);
-
-		if (!updatedNode) {
-			res.status(404).json({
-				message: "Node not found.",
-			});
-			return;
-		}
-
-		res.status(200).json({
-			message: "Node updated successfully!!!",
-			node: updatedNode,
-		});
-	} catch (error) {
-		console.log(error);
-		res.status(500).json({
-			message: "Something went wrong while updating the node.",
-		});
-	}
-});
-
-// ========== GET ALL NODES (for a workflow) ==========
-app.get("/nodes/:workflowId", authMiddleware, async (req, res) => {
-	const params = CreateNodeSchemaParams.safeParse(req.params);
-
-	if (!params.success) {
-		res.status(400).json({
-			message: "Invalid workflow id.",
-			errors: params.error.message,
-		});
-		return;
-	}
-
-	const { workflowId } = params.data;
-
-	try {
-		// Verify workflow ownership
-		const workflow = await Workflow.findOne({
-			_id: workflowId,
-			userId: req.userId,
-		});
-
-		if (!workflow) {
-			res.status(404).json({
-				message: "Workflow not found or unauthorized.",
-			});
-			return;
-		}
-
-		const nodes = await Node.find({ workflowId }).lean();
-
-		res.status(200).json({
-			message: "Nodes fetched successfully!!!",
-			nodes,
-			count: nodes.length,
-		});
-	} catch (error) {
-		console.log(error);
-		res.status(500).json({
-			message: "Something went wrong while fetching nodes.",
-		});
-	}
-});
-
 // ========== GET SINGLE NODE BY ID ==========
 app.get("/nodes/:workflowId/:nodeId", authMiddleware, async (req, res) => {
 	const params = GetNodeSchemaParams.safeParse(req.params);
