@@ -61,34 +61,6 @@ export default function Dashboard() {
 
 	return (
 		<div className="min-h-screen bg-neutral-50 text-neutral-900">
-			{/* Header */}
-			<header className="border-b border-neutral-200 bg-white/50 backdrop-blur-xl sticky top-0 z-10">
-				<div className="container mx-auto px-6 h-16 flex items-center justify-between">
-					<div className="flex items-center gap-2 font-bold text-xl">
-						<div className="p-1.5 bg-neutral-900 text-white rounded-lg">
-							<Workflow className="w-5 h-5" />
-						</div>
-						<span>Dashboard</span>
-					</div>
-					<div className="flex items-center gap-4">
-						<Button
-							onClick={() => {
-								localStorage.removeItem("token");
-								navigate("/signin");
-							}}
-							variant="outline"
-							size="sm"
-							className="border-neutral-200 hover:bg-neutral-100"
-						>
-							Sign Out
-						</Button>
-						<div className="w-8 h-8 rounded-full bg-neutral-100 border border-neutral-200 flex items-center justify-center text-neutral-600 font-bold text-sm">
-							U
-						</div>
-					</div>
-				</div>
-			</header>
-
 			<main className="container mx-auto px-6 py-8">
 				{/* Actions Bar */}
 				<div className="flex flex-col md:flex-row gap-4 justify-between items-start md:items-center mb-8">
