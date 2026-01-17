@@ -17,14 +17,12 @@ import {
 	UpdateWorkflowSchemaBody,
 	UpdateWorkflowSchemaParams,
 } from "common/types";
-import { Edge, Node, User, Workflow } from "db/schemas";
-import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
+import { Edge, Node, Workflow } from "db/schemas";
 import { authMiddleware } from "./middleware";
-const app = express();
+import { connectToMongoDB } from "./connectDb.ts";
+import { PORT } from "./constant.ts";
 
-const PORT = process.env.PORT!;
-const JWT_SECRET = process.env.JWT_SECRET!;
+const app = express();
 
 app.use(express.json());
 app.use(
@@ -33,323 +31,25 @@ app.use(
 	}),
 );
 
-mongoose.connect(process.env.MONGO_URI!).then(() => {
-	app.listen(PORT);
-});
+// =============== ROUTES ===============
 
-//routes
+// ------------- USER ROUTES -------------
+import authRoutes from "./routes/auth.routes.ts";
+app.use("/api/v1/auth", authRoutes);
 
-// auth routes
-app.post("/signup", async (req, res) => {
-	const { success, data } = SignupSchema.safeParse(req.body);
-	if (!success) {
-		res.status(403).json({
-			message: "Incorrect inputs",
-		});
-		return;
-	}
-	const existingUser = await User.findOne({ username: data.username });
+// ------------- WORKFLOW ROUTES -------------
+import workflowRoutes from "./routes/workflow.routes.ts";
+app.use("/api/v1/workflow", workflowRoutes);
 
-	if (existingUser) {
-		res.status(400).json({
-			message: "User with this username already exists try another one.",
-		});
-	}
-	const SALT_ROUNDS = 10;
+// ------------- NODE ROUTES -------------
+import nodeRoutes from "./routes/node.routes.ts";
+app.use("/api/v1/node", nodeRoutes);
 
-	const hashedPassword = await bcrypt.hash(data.password, SALT_ROUNDS);
-
-	try {
-		const newUser = await User.create({
-			username: data.username,
-			password: hashedPassword,
-		});
-
-		res.status(200).json({
-			message: "Signed up successfully.",
-			id: newUser._id,
-		});
-	} catch (error: any) {
-		console.log(error.message);
-
-		res.status(500).json({
-			message: "Error while creating a new user.",
-		});
-		return;
-	}
-});
-
-app.post("/signin", async (req, res) => {
-	const { success, data } = SigninSchema.safeParse(req.body);
-	if (!success) {
-		res.status(403).json({
-			message: "Incorrect inputs",
-		});
-		return;
-	}
-	try {
-		const user = await User.findOne({
-			username: data.username,
-		});
-		if (!user) {
-			res.status(400).json({
-				message: "User with this username doesn't exist",
-			});
-			return;
-		}
-
-		const comparePassword = bcrypt.compare(data.password, user.password);
-		if (!comparePassword) {
-			res.status(400).json({
-				message: "Wrong password!",
-			});
-			return;
-		}
-		const token = jwt.sign(
-			{
-				id: user._id,
-			},
-			JWT_SECRET,
-		);
-
-		res.status(200).json({
-			message: "User signed in successfully.",
-			token,
-			id: user._id,
-		});
-	} catch (error) {
-		res.status(500).json({
-			message: "Something went bonkersss!!!",
-		});
-	}
-});
-
-// workflow routes
-
-// create workflow route
-app.post("/workflows", authMiddleware, async (req, res) => {
-	const userId = req.userId!;
-	const { success, data } = CreateWorkflowSchema.safeParse(req.body);
-	if (!success) {
-		res.status(400).json({
-			message: "Invalid request.",
-		});
-		return;
-	}
-	try {
-		const newWorkflow = await Workflow.create({
-			name: data.name,
-			description: data.description,
-			tags: data.tags,
-			active: data.active,
-			userId,
-		});
-
-		if (!newWorkflow) {
-			res.status(500).json({
-				message: "Something went bonkersss!!!",
-			});
-			return;
-		}
-
-		res.status(200).json({
-			message: "Workflow created successfully!!!",
-			workflow: newWorkflow,
-		});
-		return;
-	} catch (error: any) {
-		console.log(error.message);
-		res.status(500).json({
-			message: "Something went bonkersss!!!",
-		});
-		return;
-	}
-});
-
-// update workflow route
-app.patch("/workflows/:id", authMiddleware, async (req, res) => {
-	const body = UpdateWorkflowSchemaBody.safeParse(req.body);
-	const params = UpdateWorkflowSchemaParams.safeParse(req.params);
-
-	if (!body.success) {
-		res.status(400).json({
-			message: "Invalid request.",
-		});
-		return;
-	}
-	const { data } = body;
-	if (!params.success) {
-		res.status(400).json({
-			message: "Invalid workflow id.",
-		});
-		return;
-	}
-	const workflowId = params.data.id;
-
-	try {
-		const workflow = await Workflow.findOne({
-			_id: workflowId,
-		});
-
-		if (!workflow) {
-			res.status(400).json({
-				message: "Workflow not found.",
-			});
-			return;
-		}
-
-		if (workflow.userId?.toString() !== req.userId) {
-			res.status(400).json({
-				message: "You are not authorised to update someone else's workflow.",
-			});
-			return;
-		}
-
-		const updatedWorkflow = await Workflow.findOneAndUpdate(
-			{
-				_id: workflowId,
-			},
-			{
-				name: data?.name,
-				description: data?.description,
-				tags: data?.tags,
-				active: data?.active,
-			},
-			{
-				new: true,
-			},
-		);
-
-		if (!updatedWorkflow) {
-			res.status(400).json({
-				message: "Something went wrong while updating the workflow.",
-			});
-			return;
-		}
-
-		res.status(200).json({
-			message: "Workflow updated successfully!!!",
-			workflow: updatedWorkflow,
-		});
-		return;
-	} catch (error) {
-		console.log(error);
-		res.status(500).json({
-			message: "Something went bonkersss!!!",
-		});
-		return;
-	}
-});
-
-// get all workflows route
-app.get("/workflows", authMiddleware, async (req, res) => {
-	const userId = req.userId!;
-	try {
-		const workflows = await Workflow.find({ userId });
-		if (!workflows) {
-			res.status(400).json({
-				message: "No workflows found.",
-			});
-			return;
-		}
-		res.status(200).json({
-			message: "Workflows found successfully!!!",
-			workflows,
-		});
-		return;
-	} catch (error) {
-		res.status(500).json({
-			message: "Something went bonkersss!!!",
-		});
-		return;
-	}
-});
-
-// get workflow by id
-app.get("/workflows/:id", authMiddleware, async (req, res) => {
-	const userId = req.userId;
-	const { success, data } = GetWorkflowByIdSchema.safeParse(req.params);
-	if (!success) {
-		res.status(400).json({
-			message: "Invalid workflow id.",
-		});
-		return;
-	}
-
-	try {
-		const workflow = await Workflow.findOne({ _id: data.id }).lean();
-		if (!workflow) {
-			res.status(400).json({
-				message: "Workflow not found.",
-			});
-			return;
-		}
-
-		const nodes = await Node.find({ workflowId: workflow._id });
-		const edges = await Edge.find({ workflowId: workflow._id });
-
-		if (workflow.userId?.toString() !== userId) {
-			res.status(400).json({
-				message: "You are unauthorised to view someone else's workflows",
-			});
-			return;
-		}
-
-		res.status(200).json({
-			message: "Workflow found successfully!!!",
-			workflow: { ...workflow, nodes, edges },
-		});
-		return;
-	} catch (error) {
-		console.log(error);
-		res.status(500).json({
-			message: "Something went bonkersss!!!",
-		});
-		return;
-	}
-});
-
-// delete workflow
-app.delete("/workflows/:id", authMiddleware, async (req, res) => {
-	const { success, data } = DeleteWorkflowSchemaParams.safeParse(req.params);
-	if (!success) {
-		res.status(400).json({
-			message: "Invalid workflow id.",
-		});
-		return;
-	}
-	try {
-		const workflow = await Workflow.findOne({ _id: data.id });
-		if (!workflow) {
-			res.status(400).json({
-				message: "Workflow not found.",
-			});
-			return;
-		}
-
-		if (workflow.userId?.toString() !== req.userId) {
-			res.status(400).json({
-				message: "You are not authorised to delete someone else's workflow.",
-			});
-			return;
-		}
-
-		await Workflow.deleteOne({ _id: data.id });
-		await Node.deleteMany({ workflowId: workflow._id });
-		await Edge.deleteMany({ workflowId: workflow._id });
-
-		res.status(200).json({
-			message: "Workflow deleted successfully!!!",
-		});
-		return;
-	} catch (error) {
-		console.log(error);
-		res.status(400).json({
-			message: "Something went bonkersss!!!",
-		});
-		return;
-	}
-});
+connectToMongoDB().then(() =>
+	app.listen(PORT, () => {
+		console.log(`App is listening on PORT: ${PORT}`);
+	}),
+);
 
 // node routes
 // ========== CREATE NODE ==========
