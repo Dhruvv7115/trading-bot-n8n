@@ -1,41 +1,48 @@
 import z, { string } from "zod";
 
-export const SignupSchema = z.object({
-	username: z.string().min(3).max(100),
-	password: z.string().min(8),
-});
-export const SigninSchema = z.object({
+// ========= BASE SCHEMAS =========
+
+const mongoIdSchema = z
+	.string()
+	.regex(/^[0-9a-fA-F]{24}$/, "Invalid MongoDB ObjectId");
+
+// ========= AUTH SCHEMAS =========
+
+const authBaseSchema = z.object({
 	username: z.string().min(3).max(100),
 	password: z.string().min(8),
 });
 
-export const CreateWorkflowSchema = z.object({
+export const SignupSchema = authBaseSchema;
+export const SigninSchema = authBaseSchema;
+
+// ========= WORKFLOW SCHEMAS =========
+
+const workflowBaseSchema = z.object({
 	name: z.string().min(3).max(50),
 	description: z.string().min(3).max(100).optional(),
 	active: z.boolean().optional(),
-	tags: z.array(string()).optional(),
+	tags: z.array(z.string()).optional(),
 });
 
-export const UpdateWorkflowSchemaBody = z.object({
-	name: z.string().min(3).max(50).optional(),
-	description: z.string().min(3).max(100).optional(),
-	active: z.boolean().optional(),
-	tags: z.array(string()).optional(),
+export const CreateWorkflowSchema = workflowBaseSchema;
+
+export const UpdateWorkflowSchemaBody = workflowBaseSchema.partial();
+
+export const WorkflowIdParamsSchema = z.object({
+	id: mongoIdSchema,
 });
 
-export const UpdateWorkflowSchemaParams = z.object({
-	id: z.string(),
-});
+// aliases
+export const UpdateWorkflowSchemaParams = WorkflowIdParamsSchema;
 
-export const GetWorkflowByIdSchema = z.object({
-	id: z.string(),
-});
+export const GetWorkflowByIdSchema = WorkflowIdParamsSchema;
 
-export const DeleteWorkflowSchemaParams = z.object({
-	id: z.string(),
-});
+export const DeleteWorkflowSchemaParams = WorkflowIdParamsSchema;
 
-export const CreateNodeSchemaBody = z.object({
+// ========= NODE SCHEMAS =========
+
+const nodeBaseSchema = z.object({
 	id: z.string(),
 	title: z.string(),
 	description: z.string(),
@@ -50,50 +57,45 @@ export const CreateNodeSchemaBody = z.object({
 	}),
 });
 
-export const CreateNodeSchemaParams = z.object({
-	workflowId: z.string(),
+export const CreateNodeSchemaBody = nodeBaseSchema;
+
+export const UpdateNodeSchemaBody = nodeBaseSchema
+	.omit({ id: true }) // Can't update ID
+	.partial(); // All fields optional for update
+
+export const NodeWorkflowParamsSchema = z.object({
+	workflowId: mongoIdSchema,
 });
 
-export const UpdateDeleteGetNodeSchemaParams = z.object({
-	workflowId: z.string().regex(/^[0-9a-fA-F]{24}$/),
+export const NodeParamsSchema = z.object({
+	workflowId: mongoIdSchema,
 	nodeId: z.string(),
 });
 
-export const UpdateNodeSchemaBody = z.object({
-	title: z.string().optional(),
-	description: z.string().optional(),
-	type: z
-		.enum(["hyperliquid", "lighter", "backpack", "time", "price"])
-		.optional(),
-	data: z
-		.object({
-			kind: z.enum(["trigger", "action"]).optional(),
-			metaData: z.any().optional(),
-		})
-		.optional(),
-	position: z
-		.object({
-			x: z.number(),
-			y: z.number(),
-		})
-		.optional(),
-});
+// Aliases
+export const CreateNodeSchemaParams = NodeWorkflowParamsSchema;
+export const UpdateNodeSchemaParams = NodeParamsSchema;
+export const DeleteNodeSchemaParams = NodeParamsSchema;
+export const GetNodeSchemaParams = NodeParamsSchema;
 
-export const CreateEdgeSchemaBody = z.object({
+// ========= EDGE SCHEMAS =========
+const edgeBaseSchema = z.object({
+	id: z.string(),
 	source: z.string(),
 	target: z.string(),
-	id: z.string(),
 });
 
-export const CreateEdgeSchemaParams = z.object({
-	workflowId: z.string(),
-});
+export const CreateEdgeSchemaBody = edgeBaseSchema;
 
 export const EdgeWorkflowParamsSchema = z.object({
-	workflowId: z.string().regex(/^[0-9a-fA-F]{24}$/, "Invalid MongoDB ObjectId")
+	workflowId: mongoIdSchema,
 });
 
 export const EdgeParamsSchema = z.object({
-	workflowId: z.string().regex(/^[0-9a-fA-F]{24}$/, "Invalid MongoDB ObjectId"),
-	edgeId: z.string()
+	workflowId: mongoIdSchema,
+	edgeId: z.string(),
 });
+
+// Aliases for clarity
+export const CreateEdgeSchemaParams = EdgeWorkflowParamsSchema;
+export const DeleteEdgeSchemaParams = EdgeParamsSchema;
