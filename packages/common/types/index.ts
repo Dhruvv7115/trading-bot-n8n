@@ -99,3 +99,22 @@ export const EdgeParamsSchema = z.object({
 // Aliases for clarity
 export const CreateEdgeSchemaParams = EdgeWorkflowParamsSchema;
 export const DeleteEdgeSchemaParams = EdgeParamsSchema;
+
+export const GetExecutionsSchemaParams = z.object({
+	workflowId: mongoIdSchema,
+});
+
+export const GetExecutionsSchema = GetExecutionsSchemaParams;
+
+export const CreateCredentialSchemaBody = z.object({
+	name: z.string(),
+	type: z.enum(["api_key", "password", "oauth"]),
+	data: z.any(),
+});
+
+export const UpdateCredentialSchemaBody = CreateCredentialSchemaBody.partial();
+
+export const CredentialParamsSchema = z.object({
+	id: mongoIdSchema,
+});
+export const UpdateCredentialSchemaParams = CredentialParamsSchema;
