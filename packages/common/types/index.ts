@@ -1,6 +1,10 @@
 import z, { string } from "zod";
 
 // ========= BASE SCHEMAS =========
+export * from "./nodes.types";
+export * from "./triggers.types";
+export * from "./actions.types";
+export * from "./assets.types";
 
 const mongoIdSchema = z
 	.string()

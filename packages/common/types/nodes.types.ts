@@ -5,9 +5,18 @@ export interface NodeType {
 	id: string;
 	position: { x: number; y: number };
 	type: TriggerType | ActionType;
-	kind: "TRIGGER" | "ACTION";
+	title: string;
+	description: string;
 	data: {
 		metaData: TriggerMetaData | TradingMetaData;
-		label: string;
+		kind: "TRIGGER" | "ACTION";
 	};
+	credentials?: Credential[];
+}
+
+export interface Credential {
+	id: string;
+	name: string;
+	type: "api_key" | "password" | "oauth";
+	data: any;
 }

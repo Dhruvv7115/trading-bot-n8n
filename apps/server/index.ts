@@ -1,26 +1,8 @@
-import express from "express";
-import mongoose, { isValidObjectId } from "mongoose";
-import {
-	CreateEdgeSchemaBody,
-	CreateEdgeSchemaParams,
-	CreateNodeSchemaBody,
-	CreateNodeSchemaParams,
-	CreateWorkflowSchema,
-	DeleteWorkflowSchemaParams,
-	EdgeParamsSchema,
-	GetNodeSchemaParams,
-	GetWorkflowByIdSchema,
-	SigninSchema,
-	SignupSchema,
-	UpdateNodeSchemaBody,
-	UpdateNodeSchemaParams,
-	UpdateWorkflowSchemaBody,
-	UpdateWorkflowSchemaParams,
-} from "common/types";
-import { Edge, Node, Workflow } from "db/schemas";
+import express, { type Request } from "express";
 import { authMiddleware } from "./middleware";
 import { connectToMongoDB } from "./connectDb.ts";
 import { PORT } from "./constant.ts";
+import cors from "cors";
 
 const app = express();
 
@@ -30,7 +12,7 @@ app.use(
 		extended: true,
 	}),
 );
-
+app.use(cors<Request>());
 // =============== ROUTES ===============
 
 // ------------- USER ROUTES -------------

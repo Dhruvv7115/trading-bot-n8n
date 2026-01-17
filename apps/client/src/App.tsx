@@ -9,6 +9,8 @@ import Signup from "./pages/Signup";
 import Signin from "./pages/Signin";
 import Dashboard from "./pages/Dashboard";
 import CreateWorkflow from "./pages/CreateWorkflow";
+import EditWorkflowPage from "./pages/EditWorkflow";
+import DashboardLayout from "./layouts/DashboardLayout";
 import { Toaster } from "sonner";
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
@@ -21,7 +23,7 @@ function App() {
 	return (
 		<Router>
 			<Toaster
-				theme="dark"
+				theme="light"
 				position="top-right"
 			/>
 			<Routes>
@@ -41,7 +43,9 @@ function App() {
 					path="/dashboard"
 					element={
 						<ProtectedRoute>
-							<Dashboard />
+							<DashboardLayout>
+								<Dashboard />
+							</DashboardLayout>
 						</ProtectedRoute>
 					}
 				/>
@@ -49,7 +53,9 @@ function App() {
 					path="/workflow/create"
 					element={
 						<ProtectedRoute>
-							<CreateWorkflow />
+							<DashboardLayout>
+								<CreateWorkflow />
+							</DashboardLayout>
 						</ProtectedRoute>
 					}
 				/>
@@ -57,8 +63,9 @@ function App() {
 					path="/workflow/:id"
 					element={
 						<ProtectedRoute>
-							{/* Todo: Add Workflow Editor Route */}
-							<CreateWorkflow />
+							<DashboardLayout>
+								<EditWorkflowPage />
+							</DashboardLayout>
 						</ProtectedRoute>
 					}
 				/>

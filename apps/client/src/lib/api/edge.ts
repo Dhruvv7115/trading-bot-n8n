@@ -14,4 +14,8 @@ export const edgeApi = {
 		const response = await apiClient.delete(`/edge/${workflowId}/${edgeId}`);
 		return response.data;
 	},
+	getAll: async (workflowId: string) => {
+		const response = await apiClient.get(`/edge/${workflowId}`);
+		return response.data;
+	},
 };
