@@ -42,4 +42,4 @@ const updateCredential = async (req: Request, res: Response) => {
 	}
 };
 
-export { createCredential };
+export { createCredential, updateCredential };
