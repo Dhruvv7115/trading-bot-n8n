@@ -39,7 +39,7 @@ const createWorkflowController = async (req: Request, res: Response) => {
 		});
 		return;
 	} catch (error: any) {
-		console.log(error.message);
+		console.error(error.message);
 		res.status(500).json({
 			message: "Something went bonkersss!!!",
 		});
@@ -77,7 +77,6 @@ const updateWorkflowController = async (req: Request, res: Response) => {
 			});
 			return;
 		}
-		console.log(workflow.userId?.toString(), req.userId);
 
 		if (workflow.userId?.toString() !== req.userId) {
 			res.status(400).json({
@@ -114,7 +113,7 @@ const updateWorkflowController = async (req: Request, res: Response) => {
 		});
 		return;
 	} catch (error) {
-		console.log(error);
+		console.error(error);
 		res.status(500).json({
 			message: "Something went bonkersss!!!",
 		});
@@ -166,8 +165,6 @@ const getWorkflowByIdController = async (req: Request, res: Response) => {
 
 		const nodes = await Node.find({ workflowId: workflow._id }).lean();
 		const edges = await Edge.find({ workflowId: workflow._id }).lean();
-		console.log(nodes);
-		console.log(edges);
 
 		if (workflow.userId?.toString() !== userId) {
 			res.status(400).json({
@@ -182,7 +179,7 @@ const getWorkflowByIdController = async (req: Request, res: Response) => {
 		});
 		return;
 	} catch (error) {
-		console.log(error);
+		console.error(error);
 		res.status(500).json({
 			message: "Something went bonkersss!!!",
 		});
@@ -223,7 +220,7 @@ const deleteWorkflowController = async (req: Request, res: Response) => {
 		});
 		return;
 	} catch (error) {
-		console.log(error);
+		console.error(error);
 		res.status(400).json({
 			message: "Something went bonkersss!!!",
 		});

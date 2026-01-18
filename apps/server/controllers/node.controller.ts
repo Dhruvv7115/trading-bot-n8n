@@ -78,7 +78,7 @@ const createNode = async (req: Request, res: Response) => {
 		});
 		return;
 	} catch (error) {
-		console.log(error);
+		console.error(error);
 		res.status(500).json({
 			message: "Something went bonkersss!!!",
 		});
@@ -141,7 +141,7 @@ const updateNode = async (req: Request, res: Response) => {
 			node: updatedNode,
 		});
 	} catch (error) {
-		console.log(error);
+		console.error(error);
 		res.status(500).json({
 			message: "Something went wrong while updating the node.",
 		});
@@ -199,7 +199,7 @@ const deleteNode = async (req: Request, res: Response) => {
 		});
 		return;
 	} catch (error) {
-		console.log(error);
+		console.error(error);
 		res.status(500).json({
 			message: "Something went wrong while deleting the node.",
 		});
@@ -242,7 +242,7 @@ const getAllNodes = async (req: Request, res: Response) => {
 			count: nodes.length,
 		});
 	} catch (error) {
-		console.log(error);
+		console.error(error);
 		res.status(500).json({
 			message: "Something went wrong while fetching nodes.",
 		});
@@ -293,7 +293,7 @@ const getNodeById = async (req: Request, res: Response) => {
 			node,
 		});
 	} catch (error) {
-		console.log(error);
+		console.error(error);
 		res.status(500).json({
 			message: "Something went wrong while fetching the node.",
 		});

@@ -66,7 +66,7 @@ const createEdge = async (req: Request, res: Response) => {
 		});
 		return;
 	} catch (error) {
-		console.log(error);
+		console.error(error);
 		res.status(500).json({
 			message: "Something went bonkersss!!!",
 		});
@@ -116,7 +116,7 @@ const deleteEdge = async (req: Request, res: Response) => {
 			message: "Edge deleted successfully!!!",
 		});
 	} catch (error) {
-		console.log(error);
+		console.error(error);
 		res.status(500).json({
 			message: "Something went wrong while deleting the edge.",
 		});

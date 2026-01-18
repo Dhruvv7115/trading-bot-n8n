@@ -134,15 +134,12 @@ export default function EditWorkflowPage() {
 	}
 
 	return (
-		id && (
-			<WorkflowEditor
-				workflowId={id}
-				initialNodes={nodes}
-				initialEdges={edges}
-				initialName={workflowName}
-				onSave={handleSave}
-				isSaving={isSaving}
-			/>
-		)
+		<WorkflowEditor
+			initialNodes={nodes}
+			initialEdges={edges}
+			initialName={workflowName}
+			onSave={handleSave}
+			isSaving={isSaving}
+		/>
 	);
 }

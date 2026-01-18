@@ -14,12 +14,12 @@ export default function CreateWorkflowPage() {
 		setIsSaving(true);
 		try {
 			// 1. Create Workflow
-			const workflow = await workflowApi.create({
+			const response = await workflowApi.create({
 				name,
 				active: false,
 			});
 
-			if (!workflow || !workflow.id) {
+			if (!response.workflow || !response.workflow._id) {
 				throw new Error("Failed to create workflow");
 			}
 
@@ -27,14 +27,14 @@ export default function CreateWorkflowPage() {
 			// We map over nodes and create them one by one or in parallel
 			// Note: ensure nodeApi.create expects the structure of NodeType
 			const nodePromises = nodes.map((node) =>
-				nodeApi.create(workflow.id, node),
+				nodeApi.create(response.workflow._id, node),
 			);
 			await Promise.all(nodePromises);
 
 			// 3. Create Edges
 			// Note: ensure edgeApi.create expects the structure of Edge (id, source, target)
 			const edgePromises = edges.map((edge) =>
-				edgeApi.create(workflow.id, {
+				edgeApi.create(response.workflow.id, {
 					id: edge.id,
 					source: edge.source,
 					target: edge.target,
@@ -43,7 +43,7 @@ export default function CreateWorkflowPage() {
 			await Promise.all(edgePromises);
 
 			toast.success("Workflow created successfully!");
-			navigate(`/workflow/${workflow.id}`);
+			navigate(`/workflow/${response.workflow._id}`);
 		} catch (error: any) {
 			console.error(error);
 			toast.error(error.message || "Failed to create workflow");

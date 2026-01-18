@@ -45,7 +45,7 @@ const nodeTypes = {
 };
 
 interface WorkflowEditorProps {
-	workflowId: string;
+	workflowId?: string;
 	initialNodes?: NodeType[];
 	initialEdges?: Edge[];
 	initialName?: string;
@@ -106,11 +106,10 @@ export default function WorkflowEditor({
 				},
 				type: trigger,
 				title: trigger.charAt(0).toUpperCase() + trigger.slice(1),
-				description: "",
+				description: `${metaData.type} ${metaData.asset}`,
 				data: {
 					kind: "TRIGGER",
 					metaData: metaData,
-					label: trigger.charAt(0).toUpperCase() + trigger.slice(1),
 				},
 			},
 		]);
