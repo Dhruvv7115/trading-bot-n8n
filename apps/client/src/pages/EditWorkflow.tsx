@@ -31,30 +31,17 @@ export default function EditWorkflowPage() {
 		if (!id) return;
 		try {
 			setLoading(true);
-			const [workflow, fetchedNodes, fetchedEdges] = await Promise.all([
-				workflowApi.getById(id),
-				nodeApi.getAll(id),
-				edgeApi.getAll(id), // Assuming edgeApi.getAll exists, if not need to add it
-			]);
-
-			if (workflow) {
-				setWorkflowName(workflow.name);
-			}
-
-			if (fetchedNodes) {
-				const n = fetchedNodes.nodes || fetchedNodes; // Adjust based on API structure
-				setNodes(n);
-				setOriginalNodeIds(new Set(n.map((node: NodeType) => node.id)));
-			}
-
-			if (fetchedEdges) {
-				const e = fetchedEdges.edges || fetchedEdges; // Adjust based on API structure
-				const formattedEdges = e.map((edge: any) => ({
-					...edge,
-					id: edge.id, // Ensure ID matches
-				}));
-				setEdges(formattedEdges);
-				setOriginalEdgeIds(new Set(formattedEdges.map((edge: any) => edge.id)));
+			const response = await workflowApi.getById(id);
+			if (response.workflow) {
+				setWorkflowName(response.workflow.name);
+				setNodes(response.workflow.nodes);
+				setEdges(response.workflow.edges);
+				setOriginalNodeIds(
+					new Set(response.workflow.nodes.map((node: NodeType) => node.id)),
+				);
+				setOriginalEdgeIds(
+					new Set(response.workflow.edges.map((edge: Edge) => edge.id)),
+				);
 			}
 		} catch (error) {
 			console.error("Failed to load workflow data", error);
@@ -90,11 +77,9 @@ export default function EditWorkflowPage() {
 			const nodePromises = currentNodes.map((node) => {
 				if (originalNodeIds.has(node.id)) {
 					// Update
-					// @ts-ignore
 					return nodeApi.update(id, node.id, node);
 				} else {
 					// Create
-					// @ts-ignore
 					return nodeApi.create(id, node);
 				}
 			});
@@ -149,12 +134,15 @@ export default function EditWorkflowPage() {
 	}
 
 	return (
-		<WorkflowEditor
-			initialNodes={nodes}
-			initialEdges={edges}
-			initialName={workflowName}
-			onSave={handleSave}
-			isSaving={isSaving}
-		/>
+		id && (
+			<WorkflowEditor
+				workflowId={id}
+				initialNodes={nodes}
+				initialEdges={edges}
+				initialName={workflowName}
+				onSave={handleSave}
+				isSaving={isSaving}
+			/>
+		)
 	);
 }

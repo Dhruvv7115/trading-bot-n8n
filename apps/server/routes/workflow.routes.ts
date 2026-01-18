@@ -9,13 +9,10 @@ import {
 
 const router = Router();
 
-router
-	.route("/")
-	.post(createWorkflowController)
-	.get(getAllWorkflowsController);
+router.route("/").post(createWorkflowController).get(getAllWorkflowsController);
 
 router
-	.route("/:workflowId")
+	.route("/:id")
 	.delete(deleteWorkflowController)
 	.patch(updateWorkflowController)
 	.get(getWorkflowByIdController);

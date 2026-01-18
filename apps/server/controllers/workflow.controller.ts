@@ -77,6 +77,7 @@ const updateWorkflowController = async (req: Request, res: Response) => {
 			});
 			return;
 		}
+		console.log(workflow.userId?.toString(), req.userId);
 
 		if (workflow.userId?.toString() !== req.userId) {
 			res.status(400).json({
@@ -163,8 +164,10 @@ const getWorkflowByIdController = async (req: Request, res: Response) => {
 			return;
 		}
 
-		const nodes = await Node.find({ workflowId: workflow._id });
-		const edges = await Edge.find({ workflowId: workflow._id });
+		const nodes = await Node.find({ workflowId: workflow._id }).lean();
+		const edges = await Edge.find({ workflowId: workflow._id }).lean();
+		console.log(nodes);
+		console.log(edges);
 
 		if (workflow.userId?.toString() !== userId) {
 			res.status(400).json({

@@ -42,7 +42,7 @@ const createNode = async (req: Request, res: Response) => {
 			});
 			return;
 		}
-		if (req.userId !== workflow.userId) {
+		if (workflow.userId?.toString() !== req.userId) {
 			res.status(400).json({
 				message:
 					"You're unauthorised to create a node on someone else's workflow.",

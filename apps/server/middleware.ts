@@ -8,7 +8,6 @@ export const authMiddleware = async (
 	next: NextFunction,
 ) => {
 	const token = req.headers["authorization"]?.split(" ")[1] as string;
-	console.log("token", token);
 
 	if (!token) {
 		res.status(400).json({

@@ -45,6 +45,7 @@ const nodeTypes = {
 };
 
 interface WorkflowEditorProps {
+	workflowId: string;
 	initialNodes?: NodeType[];
 	initialEdges?: Edge[];
 	initialName?: string;
@@ -53,6 +54,7 @@ interface WorkflowEditorProps {
 }
 
 export default function WorkflowEditor({
+	workflowId,
 	initialNodes = [],
 	initialEdges = [],
 	initialName = "",
@@ -113,7 +115,10 @@ export default function WorkflowEditor({
 			},
 		]);
 	};
-	const onActionSelect = (action: ActionType, metaData: TradingMetaData) => {
+	const onActionSelect = async (
+		action: ActionType,
+		metaData: TradingMetaData,
+	) => {
 		if (!metaData.type) {
 			toast.error("Please enter the type of trade");
 			return;
@@ -178,10 +183,10 @@ export default function WorkflowEditor({
 	};
 
 	return (
-		<div className="relative w-screen h-screen bg-neutral-50">
+		<div className="flex flex-col w-full h-screen bg-neutral-50 py-2 px-6">
 			{/* Navbar Overlay */}
-			<div className="absolute top-0 left-0 right-0 z-10 px-6 py-4 flex items-center justify-between pointer-events-none">
-				<div className="pointer-events-auto">
+			<div className="flex items-center justify-between mb-4">
+				<div>
 					<Button
 						variant="outline"
 						className="bg-white border-neutral-200 hover:bg-neutral-100 text-neutral-900 gap-2"
@@ -191,7 +196,7 @@ export default function WorkflowEditor({
 						Back
 					</Button>
 				</div>
-				<div className="flex bg-white/50 backdrop-blur-md p-1 rounded-lg border border-neutral-200 pointer-events-auto">
+				<div className="flex bg-white/50 backdrop-blur-md p-1 rounded-lg border border-neutral-200">
 					<Input
 						value={workflowName}
 						onChange={(e) => setWorkflowName(e.target.value)}
@@ -216,19 +221,21 @@ export default function WorkflowEditor({
 			</div>
 
 			{/* Flow Canvas */}
-			<ReactFlow
-				nodes={nodes}
-				edges={edges}
-				nodeTypes={nodeTypes}
-				onNodesChange={onNodesChange}
-				onEdgesChange={onEdgesChange}
-				onConnect={onConnect}
-				onConnectEnd={onConnectEnd}
-				fitView
-				className="bg-neutral-50"
-			>
-				{/* Background or other controls could go here */}
-			</ReactFlow>
+			<div className="flex-1 border-2 border-neutral-200 rounded-xl overflow-hidden bg-neutral-100 mb-4">
+				<ReactFlow
+					nodes={nodes}
+					edges={edges}
+					nodeTypes={nodeTypes}
+					onNodesChange={onNodesChange}
+					onEdgesChange={onEdgesChange}
+					onConnect={onConnect}
+					onConnectEnd={onConnectEnd}
+					fitView
+					className="bg-neutral-50"
+				>
+					{/* Background or other controls could go here */}
+				</ReactFlow>
+			</div>
 
 			{/* Sheets */}
 			{nodes.length === 0 && (

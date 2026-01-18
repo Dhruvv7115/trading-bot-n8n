@@ -39,7 +39,7 @@ const createEdge = async (req: Request, res: Response) => {
 			});
 			return;
 		}
-		if (req.userId !== workflow.userId) {
+		if (workflow.userId?.toString() !== req.userId) {
 			res.status(400).json({
 				message:
 					"You're unauthorised to create an edge on someone else's workflow.",
