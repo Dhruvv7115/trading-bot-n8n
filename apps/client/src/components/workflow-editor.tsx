@@ -203,7 +203,14 @@ export default function WorkflowEditor({
 						className="border-none bg-transparent focus-visible:ring-0 w-64 text-center font-medium placeholder:text-neutral-400"
 					/>
 				</div>
-				<div className="pointer-events-auto">
+				<div className="flex items-center gap-2">
+					<Button
+						onClick={() => {console.log(workflowId); navigate(`/workflow/${workflowId}/executions`)}}
+						variant="outline"
+						className="bg-white border-neutral-200 hover:bg-neutral-100 text-neutral-900 gap-2"
+					>
+						View Executions
+					</Button>
 					<Button
 						onClick={handleSaveClick}
 						disabled={isSaving}

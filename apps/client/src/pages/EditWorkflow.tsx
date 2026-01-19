@@ -135,6 +135,7 @@ export default function EditWorkflowPage() {
 
 	return (
 		<WorkflowEditor
+			workflowId={id}
 			initialNodes={nodes}
 			initialEdges={edges}
 			initialName={workflowName}

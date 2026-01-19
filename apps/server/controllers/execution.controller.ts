@@ -32,7 +32,8 @@ const getAllExecutionsByWorkflowId = async (req: Request, res: Response) => {
 		const executions = await Execution.find({ workflowId: data.workflowId });
 		res.status(200).json({
 			success: true,
-			data: executions,
+			message: "Executions fetched successfully",
+			executions,
 		});
 		return;
 	} catch (error) {
