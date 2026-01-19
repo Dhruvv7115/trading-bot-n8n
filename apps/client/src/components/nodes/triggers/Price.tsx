@@ -1,18 +1,22 @@
 import { Handle, Position } from "@xyflow/react";
 import type { PriceNodeMetaData } from "common/types";
+import { IndianRupee } from "lucide-react";
 
 export default function Price({
 	data,
 	isConnectable,
 }: {
 	data: {
-		metaData: PriceNodeMetaData
+		metaData: PriceNodeMetaData;
 	};
 	isConnectable: boolean;
 }) {
 	return (
 		<div className="bg-white rounded-2xl outline-[1.5px] outline-gray-300 -outline-offset-[1.5px] p-5 shadow-md hover:shadow-lg transition-shadow relative min-w-[200px]">
-			<h2 className="font-bold text-lg text-black mb-3">Price Trigger</h2>
+			<div className="flex items-center justify-between mb-2">
+				<h2 className="font-bold text-lg text-black">Price Trigger</h2>
+				<IndianRupee className="size-5 text-neutral-500" />
+			</div>
 
 			<div className="space-y-2 mb-3">
 				<div className="text-neutral-800 font-semibold text-sm">

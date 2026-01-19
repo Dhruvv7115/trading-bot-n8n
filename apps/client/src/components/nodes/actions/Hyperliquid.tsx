@@ -7,42 +7,50 @@ export default function Hyperliquid({
 }: {
 	data: {
 		metaData: TradingMetaData;
-		label: ActionType;
 	};
 	isConnectable: boolean;
 }) {
+	const { type, quantity, symbol } = data.metaData;
 	return (
-		<div className="bg-white rounded-2xl outline-[1.5px] outline-gray-400 -outline-offset-[1.5px] p-4 shadow-md relative">
-			<h2 className="font-bold text-lg mb-2">{data.label} Trade</h2>
-			<div className="text-neutral-800 font-semibold text-sm">
-				<span className="font-light text-neutral-500">Type: </span>
-				{data.metaData.type}
+		<div className="bg-white rounded-2xl outline-1 outline-neutral-300 -outline-offset-1 p-4 shadow-md relative">
+			<div className="flex items-center justify-between mb-2 gap-4">
+				<h2 className="font-bold text-lg text-black">Hyperliquid Trade</h2>
+				<img
+					src="../../assets/logos/hyperliquid.png"
+					alt="hyperliquid"
+					className="size-5 rounded-full"
+				/>
 			</div>
 			<div className="text-neutral-800 font-semibold text-sm">
-				<span className="font-light text-neutral-500">Qty: </span>
-				{data.metaData.quantity}
+				<span className="font-light text-neutral-500">Type: </span>
+				{type}
+			</div>
+			<div className="text-neutral-800 font-semibold text-sm">
+				<span className="font-light text-neutral-500">Quantity: </span>
+				{quantity}
 			</div>
 			<div className="text-neutral-800 font-semibold text-sm">
 				<span className="font-light text-neutral-500">Symbol: </span>
-				{data.metaData.symbol}
+				{symbol}
 			</div>
-			<Handle
-				type="source"
-				position={Position.Right}
-				isConnectable={isConnectable}
-				style={{
-					backgroundColor: "#99a1af",
-					border: "none",
-					width: "0.5em",
-					height: "0.5em",
-				}}
-			/>
 			<Handle
 				type="target"
 				position={Position.Left}
 				isConnectable={isConnectable}
 				style={{
 					backgroundColor: "#99a1af",
+					border: "none",
+					width: "0.5em",
+					height: "0.8em",
+					borderRadius: "0",
+				}}
+			/>
+			<Handle
+				type="source"
+				position={Position.Right}
+				isConnectable={isConnectable}
+				style={{
+					backgroundColor: "#a1a1a1",
 					border: "none",
 					width: "0.5em",
 					height: "0.5em",

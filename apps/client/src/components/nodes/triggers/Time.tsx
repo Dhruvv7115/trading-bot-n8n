@@ -1,5 +1,6 @@
 import type { TimeNodeMetaData } from "common/types";
 import { Handle, Position } from "@xyflow/react";
+import { AlarmClock } from "lucide-react";
 
 export default function Time({
 	data,
@@ -19,9 +20,11 @@ export default function Time({
 	};
 
 	return (
-		<div className="bg-white rounded-2xl outline-[1.5px] outline-gray-300 -outline-offset-[1.5px] p-5 shadow-md hover:shadow-lg transition-shadow relative min-w-[200px]">
-			<h2 className="font-bold text-lg text-black mb-3">Timer Trigger</h2>
-
+		<div className="bg-white rounded-l-4xl rounded-r-lg outline-1 outline-neutral-400 -outline-offset-1 p-5 shadow-md hover:shadow-lg transition-shadow relative min-w-[200px]">
+			<div className="flex items-center justify-between mb-2">
+				<h2 className="font-bold text-lg text-black">Timer Trigger</h2>
+				<AlarmClock className="text-neutral-500 size-5" />
+			</div>
 			<div className="space-y-2 mb-3">
 				<div className="text-neutral-800 font-semibold text-sm">
 					<span className="font-light text-neutral-500">Interval: </span>
@@ -41,7 +44,7 @@ export default function Time({
 				position={Position.Right}
 				isConnectable={isConnectable}
 				style={{
-					backgroundColor: "#99a1af",
+					backgroundColor: "#a1a1a1",
 					border: "none",
 					width: "0.5em",
 					height: "0.5em",

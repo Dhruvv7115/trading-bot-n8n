@@ -11,35 +11,44 @@ export default function Backpack({
 	};
 	isConnectable: boolean;
 }) {
+	const { type, quantity, symbol } = data.metaData;
 	return (
 		<div className="bg-white rounded-2xl outline-[1.5px] outline-gray-400 -outline-offset-[1.5px] p-4 shadow-md relative">
-			<h2 className="font-bold text-lg mb-2">{data.label} Trade</h2>
-			<div className="text-neutral-800 font-semibold text-sm">
-				<span className="font-light text-neutral-500">Type: </span>
-				{data.metaData.type}
+			<div className="flex items-center justify-between mb-2 gap-4">
+				<h2 className="font-bold text-lg text-black">Backpack Trade</h2>
+				<img
+					src="../../assets/logos/backpack.png"
+					alt="backpack"
+					className="size-5 rounded-full"
+				/>
 			</div>
 			<div className="text-neutral-800 font-semibold text-sm">
-				<span className="font-light text-neutral-500">Qty: </span>
-				{data.metaData.quantity}
+				<span className="font-light text-neutral-500">Type: </span>
+				{type}
+			</div>
+			<div className="text-neutral-800 font-semibold text-sm">
+				<span className="font-light text-neutral-500">Quantity: </span>
+				{quantity}
 			</div>
 			<div className="text-neutral-800 font-semibold text-sm">
 				<span className="font-light text-neutral-500">Symbol: </span>
-				{data.metaData.symbol}
+				{symbol}
 			</div>
 			<Handle
-				type="source"
-				position={Position.Right}
+				type="target"
+				position={Position.Left}
 				isConnectable={isConnectable}
 				style={{
 					backgroundColor: "#99a1af",
 					border: "none",
 					width: "0.5em",
-					height: "0.5em",
+					height: "0.8em",
+					borderRadius: "0",
 				}}
 			/>
 			<Handle
-				type="target"
-				position={Position.Left}
+				type="source"
+				position={Position.Right}
 				isConnectable={isConnectable}
 				style={{
 					backgroundColor: "#99a1af",
