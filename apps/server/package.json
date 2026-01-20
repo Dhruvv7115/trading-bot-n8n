@@ -21,6 +21,7 @@
     "common": "*",
     "cors": "^2.8.5",
     "db": "*",
+    "executor": "*",
     "express": "^5.2.1",
     "jsonwebtoken": "^9.0.3",
     "mongoose": "^9.1.3"
