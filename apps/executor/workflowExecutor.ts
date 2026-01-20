@@ -89,7 +89,7 @@ export async function executeWorkflow(
 		return {
 			success: true,
 			executionId: context.executionId,
-			result,
+			// result,
 		};
 	} catch (error: any) {
 		await session.abortTransaction();
@@ -115,23 +115,97 @@ export async function executeWorkflow(
 /**
  * Build a graph showing which nodes connect to which
  */
-// function buildExecutionGraph(
-// 	nodes: any[],
-// 	edges: any[],
-// ): Map<string, string[]> {
-	
-// }
+function buildExecutionGraph(
+	nodes: any[],
+	edges: any[],
+): Map<string, string[]> {
+	const graph = new Map<string, string[]>();
+
+	// Initialize all nodes
+	nodes.forEach((node) => {
+		graph.set(node.id, []);
+	});
+
+	// Add edges
+	edges.forEach((edge) => {
+		const targets = graph.get(edge.source) || [];
+		targets.push(edge.target);
+		graph.set(edge.source, targets);
+	});
+
+	return graph;
+}
 
 /**
  * Execute a single node and its children recursively
  */
-// async function executeNode(
-// 	node: any,
-// 	graph: Map<string, string[]>,
-// 	allNodes: any[],
-// 	inputData: any,
-// 	context: ExecutionContext,
-// 	session: any,
-// ): Promise<any> {
-	
-// }
+async function executeNode(
+	node: any,
+	graph: Map<string, string[]>,
+	allNodes: any[],
+	inputData: any,
+	context: ExecutionContext,
+	session: any,
+): Promise<any> {
+	console.log(`Executing node: ${node.title} (${node.id})`);
+
+	let output;
+
+	try {
+		// Execute based on node kind
+		if (node.data.kind === "TRIGGER") {
+			// output = await executeTrigger(node, inputData);
+		} else if (node.data.kind === "ACTION") {
+			// output = await executeAction(node, inputData);
+		} else {
+			throw new Error(`Unknown node kind: ${node.data.kind}`);
+		}
+
+		// Store execution data
+		context.executionData.set(node.id, {
+			nodeId: node.id,
+			title: node.title,
+			status: "success",
+			input: inputData,
+			output,
+			executedAt: new Date(),
+		});
+
+		// Get next nodes
+		const nextNodeIds = graph.get(node.id) || [];
+
+		// Execute next nodes sequentially
+		if (nextNodeIds.length > 0) {
+			for (const nextNodeId of nextNodeIds) {
+				const nextNode = allNodes.find((n) => n.id === nextNodeId);
+				if (nextNode) {
+					output = await executeNode(
+						nextNode,
+						graph,
+						allNodes,
+						output, // Pass previous output as input
+						context,
+						session,
+					);
+				}
+			}
+		}
+
+		return output;
+	} catch (error: any) {
+		// Store error
+		context.executionData.set(node.id, {
+			nodeId: node.id,
+			title: node.title,
+			status: "error",
+			input: inputData,
+			error: {
+				message: error.message,
+				stack: error.stack,
+			},
+			executedAt: new Date(),
+		});
+
+		throw error;
+	}
+}
