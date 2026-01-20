@@ -137,6 +137,11 @@ const executionSchema = new Schema(
 			ref: "Workflow",
 			required: true,
 		},
+		mode: {
+			type: String,
+			enum: ["manual", "trigger", "webhook", "scheduled"],
+			required: true,
+		},
 		status: {
 			type: String,
 			enum: ["SUCCESS", "FAILURE", "PENDING"],
@@ -146,6 +151,10 @@ const executionSchema = new Schema(
 		failedNode: {
 			type: Schema.Types.ObjectId,
 			ref: "Node",
+		},
+		data: {
+			type: Schema.Types.Mixed,
+			default: {},
 		},
 	},
 	{
