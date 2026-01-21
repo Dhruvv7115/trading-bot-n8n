@@ -1,5 +1,7 @@
 import { Workflow, Node, Edge, Execution } from "db/schemas";
-import mongoose from "mongoose";
+import { executeTrigger } from "./triggers";
+import { executeAction } from "./actions";
+import mongoose, { mongo } from "mongoose";
 
 interface ExecutionContext {
 	workflowId: string;
@@ -78,7 +80,7 @@ export async function executeWorkflow(
 			context.executionId,
 			{
 				status: "success",
-				stoppedAt: new Date(),
+				endTime: new Date(),
 				data: Object.fromEntries(context.executionData),
 			},
 			{ session },
@@ -89,7 +91,7 @@ export async function executeWorkflow(
 		return {
 			success: true,
 			executionId: context.executionId,
-			// result,
+			result,
 		};
 	} catch (error: any) {
 		await session.abortTransaction();
@@ -121,16 +123,14 @@ function buildExecutionGraph(
 ): Map<string, string[]> {
 	const graph = new Map<string, string[]>();
 
-	// Initialize all nodes
-	nodes.forEach((node) => {
-		graph.set(node.id, []);
+	nodes.forEach((n) => {
+		graph.set(n.id, []);
 	});
 
-	// Add edges
-	edges.forEach((edge) => {
-		const targets = graph.get(edge.source) || [];
-		targets.push(edge.target);
-		graph.set(edge.source, targets);
+	edges.forEach((e) => {
+		const targets = graph.get(e.source) || [];
+		targets.push(e.target);
+		graph.set(e.source, targets);
 	});
 
 	return graph;
@@ -145,18 +145,18 @@ async function executeNode(
 	allNodes: any[],
 	inputData: any,
 	context: ExecutionContext,
-	session: any,
+	session: mongo.ClientSession,
 ): Promise<any> {
 	console.log(`Executing node: ${node.title} (${node.id})`);
 
-	let output;
+	let output: any;
 
 	try {
 		// Execute based on node kind
 		if (node.data.kind === "TRIGGER") {
-			// output = await executeTrigger(node, inputData);
+			output = await executeTrigger(node, inputData);
 		} else if (node.data.kind === "ACTION") {
-			// output = await executeAction(node, inputData);
+			output = await executeAction(node, inputData);
 		} else {
 			throw new Error(`Unknown node kind: ${node.data.kind}`);
 		}
@@ -176,7 +176,7 @@ async function executeNode(
 
 		// Execute next nodes sequentially
 		if (nextNodeIds.length > 0) {
-			for (const nextNodeId of nextNodeIds) {
+			nextNodeIds.forEach(async (nextNodeId) => {
 				const nextNode = allNodes.find((n) => n.id === nextNodeId);
 				if (nextNode) {
 					output = await executeNode(
@@ -188,7 +188,7 @@ async function executeNode(
 						session,
 					);
 				}
-			}
+			});
 		}
 
 		return output;
