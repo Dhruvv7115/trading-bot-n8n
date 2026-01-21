@@ -1,6 +1,7 @@
 import { GetExecutionsSchemaParams } from "common/types";
 import { Execution, Workflow } from "db/schemas";
 import type { Request, Response } from "express";
+import { executeWorkflow } from "executor/workflowExecutor";
 
 const getAllExecutionsByWorkflowId = async (req: Request, res: Response) => {
 	const { success, data } = GetExecutionsSchemaParams.safeParse(req.params);
@@ -45,4 +46,36 @@ const getAllExecutionsByWorkflowId = async (req: Request, res: Response) => {
 	}
 };
 
-export { getAllExecutionsByWorkflowId };
+const executeWorkflowController = async (req: Request, res: Response) => {
+	try {
+		const { workflowId } = req.params;
+
+		if (typeof workflowId !== "string") {
+			return res.status(400).json({ message: "Invalid workflow id" });
+		}
+		// Verify ownership
+		const workflow = await Workflow.findOne({
+			_id: workflowId,
+			userId: req.userId,
+		});
+
+		if (!workflow) {
+			return res.status(404).json({ message: "Workflow not found" });
+		}
+
+		const result = await executeWorkflow(workflowId, req.body.triggerData);
+
+		res.status(200).json({
+			message: "Workflow executed successfully",
+			...result,
+		});
+	} catch (error: any) {
+		console.error(error);
+		res.status(500).json({
+			message: "Workflow execution failed",
+			error: error.message,
+		});
+	}
+};
+
+export { getAllExecutionsByWorkflowId, executeWorkflowController };

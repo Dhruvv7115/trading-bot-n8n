@@ -11,6 +11,7 @@ export interface NodeType {
 		metaData: TriggerMetaData | TradingMetaData;
 		kind: "TRIGGER" | "ACTION";
 	};
+	workflowId: string;
 	credentials?: Credential[];
 }
 
