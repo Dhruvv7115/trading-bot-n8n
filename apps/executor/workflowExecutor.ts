@@ -1,5 +1,8 @@
 import { Workflow, Node, Edge, Execution } from "db/schemas";
-import mongoose from "mongoose";
+import { executeTrigger } from "./triggers";
+import { executeAction } from "./actions";
+import mongoose, { mongo } from "mongoose";
+import type { NodeType } from "common/types";
 
 interface ExecutionContext {
 	workflowId: string;
@@ -78,7 +81,7 @@ export async function executeWorkflow(
 			context.executionId,
 			{
 				status: "success",
-				stoppedAt: new Date(),
+				endTime: new Date(),
 				data: Object.fromEntries(context.executionData),
 			},
 			{ session },
@@ -89,7 +92,7 @@ export async function executeWorkflow(
 		return {
 			success: true,
 			executionId: context.executionId,
-			// result,
+			result,
 		};
 	} catch (error: any) {
 		await session.abortTransaction();
@@ -140,12 +143,12 @@ function buildExecutionGraph(
  * Execute a single node and its children recursively
  */
 async function executeNode(
-	node: any,
+	node: NodeType,
 	graph: Map<string, string[]>,
-	allNodes: any[],
+	allNodes: NodeType[],
 	inputData: any,
 	context: ExecutionContext,
-	session: any,
+	session: mongo.ClientSession,
 ): Promise<any> {
 	console.log(`Executing node: ${node.title} (${node.id})`);
 
@@ -154,9 +157,9 @@ async function executeNode(
 	try {
 		// Execute based on node kind
 		if (node.data.kind === "TRIGGER") {
-			// output = await executeTrigger(node, inputData);
+			output = await executeTrigger(node, inputData);
 		} else if (node.data.kind === "ACTION") {
-			// output = await executeAction(node, inputData);
+			output = await executeAction(node, inputData);
 		} else {
 			throw new Error(`Unknown node kind: ${node.data.kind}`);
 		}

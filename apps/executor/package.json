@@ -7,7 +7,8 @@
     "./workflowExecutor": "./workflowExecutor.ts"
   },
   "dependencies": {
-    "db": "*"
+    "db": "*",
+    "common": "*"
   },
   "devDependencies": {
     "@types/bun": "latest"

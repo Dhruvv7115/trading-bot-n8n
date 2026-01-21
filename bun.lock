@@ -57,6 +57,7 @@
     "apps/executor": {
       "name": "executor",
       "dependencies": {
+        "common": "*",
         "db": "*",
       },
       "devDependencies": {
