@@ -2,10 +2,6 @@ import { Workflow, Node, Edge, Execution } from "db/schemas";
 import { executeTrigger } from "./triggers";
 import { executeAction } from "./actions";
 import mongoose, { mongo } from "mongoose";
-<<<<<<< HEAD
-=======
-import type { NodeType } from "common/types";
->>>>>>> 78f8c61e80720f29a1e7b0493726c2cf07794b34
 
 interface ExecutionContext {
 	workflowId: string;
@@ -144,9 +140,9 @@ function buildExecutionGraph(
  * Execute a single node and its children recursively
  */
 async function executeNode(
-	node: NodeType,
+	node: any,
 	graph: Map<string, string[]>,
-	allNodes: NodeType[],
+	allNodes: any[],
 	inputData: any,
 	context: ExecutionContext,
 	session: mongo.ClientSession,
