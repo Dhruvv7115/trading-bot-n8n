@@ -7,9 +7,9 @@ export async function executeTrigger(
 ): Promise<any> {
 	switch (node.type) {
 		case "price":
-			// return executePriceTrigger(node, triggerData);
+			return executePriceTrigger(node, triggerData);
 		case "time":
-			// return executeTimeTrigger(node, triggerData);
+			return executeTimeTrigger(node, triggerData);
 		default:
 			throw new Error(`Unknown trigger type: ${node.type}`);
 	}

@@ -4,11 +4,11 @@ export async function executeTimeTrigger(
 ): Promise<any> {
 	console.log("Executing time trigger:", node.title);
 
-	const { schedule } = node.data.metaData;
+	const { time } = node.data.metaData;
 
 	return {
 		type: "time",
-		schedule,
+		time,
 		triggeredAt: new Date(),
 		triggerData,
 	};

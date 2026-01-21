@@ -63,7 +63,7 @@ const executeWorkflowController = async (req: Request, res: Response) => {
 			return res.status(404).json({ message: "Workflow not found" });
 		}
 
-		const result = await executeWorkflow(workflowId, req.body.triggerData);
+		const result = await executeWorkflow(workflowId);
 
 		res.status(200).json({
 			message: "Workflow executed successfully",

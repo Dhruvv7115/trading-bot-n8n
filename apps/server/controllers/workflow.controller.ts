@@ -22,7 +22,7 @@ const createWorkflowController = async (req: Request, res: Response) => {
 			name: data.name,
 			description: data.description,
 			tags: data.tags,
-			active: data.active,
+			active: data.active || false,
 			userId,
 		});
 

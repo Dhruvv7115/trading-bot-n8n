@@ -1,7 +1,6 @@
 import { Workflow, Node, Edge, Execution } from "db/schemas";
 import { executeTrigger } from "./triggers";
 import { executeAction } from "./actions";
-import mongoose, { mongo } from "mongoose";
 
 interface ExecutionContext {
 	workflowId: string;
@@ -16,8 +15,8 @@ export async function executeWorkflow(
 	workflowId: string,
 	triggerData?: any,
 ): Promise<any> {
-	const session = await mongoose.startSession();
-	session.startTransaction();
+	// const session = await mongoose.startSession();
+	// session.startTransaction();
 
 	const context: ExecutionContext = {
 		workflowId,
@@ -30,6 +29,7 @@ export async function executeWorkflow(
 		if (!workflow) {
 			throw new Error("Workflow not found");
 		}
+		console.log(workflow);
 
 		if (!workflow.active) {
 			throw new Error("Workflow is not active");
@@ -39,22 +39,17 @@ export async function executeWorkflow(
 		const edges = await Edge.find({ workflowId }).lean();
 
 		// 2. Create execution record
-		const execution = await Execution.create(
-			[
-				{
-					workflowId,
-					mode: triggerData ? "trigger" : "manual",
-					status: "PENDING",
-					data: {},
-				},
-			],
-			{ session },
-		);
+		const execution = await Execution.create({
+			workflowId,
+			mode: triggerData ? "trigger" : "manual",
+			status: "PENDING",
+			data: {},
+		});
 		if (!execution) {
 			throw new Error("Execution not found");
 		}
 
-		context.executionId = execution[0]?._id.toString();
+		context.executionId = execution._id.toString();
 
 		// 3. Build execution graph
 		const graph = buildExecutionGraph(nodes, edges);
@@ -72,7 +67,7 @@ export async function executeWorkflow(
 			nodes,
 			triggerData,
 			context,
-			session,
+			// session
 		);
 
 		// 6. Update execution as successful
@@ -83,10 +78,10 @@ export async function executeWorkflow(
 				endTime: new Date(),
 				data: Object.fromEntries(context.executionData),
 			},
-			{ session },
+			// { session },
 		);
 
-		await session.commitTransaction();
+		// await session.commitTransaction();
 
 		return {
 			success: true,
@@ -94,7 +89,7 @@ export async function executeWorkflow(
 			result,
 		};
 	} catch (error: any) {
-		await session.abortTransaction();
+		// await session.abortTransaction();
 
 		// Update execution as failed
 		if (context.executionId) {
@@ -110,7 +105,7 @@ export async function executeWorkflow(
 
 		throw error;
 	} finally {
-		session.endSession();
+		// session.endSession();
 	}
 }
 
@@ -145,7 +140,7 @@ async function executeNode(
 	allNodes: any[],
 	inputData: any,
 	context: ExecutionContext,
-	session: mongo.ClientSession,
+	// session: mongo.ClientSession,
 ): Promise<any> {
 	console.log(`Executing node: ${node.title} (${node.id})`);
 
@@ -185,7 +180,7 @@ async function executeNode(
 						allNodes,
 						output, // Pass previous output as input
 						context,
-						session,
+						// session,
 					);
 				}
 			});
