@@ -1,5 +1,5 @@
 import express, { type Request } from "express";
-import { authMiddleware } from "./middleware";
+import { authMiddleware } from "./middleware.ts";
 import { connectToMongoDB } from "./connectDb.ts";
 import { PORT } from "./constant.ts";
 import cors from "cors";
