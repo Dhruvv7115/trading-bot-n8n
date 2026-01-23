@@ -1,34 +1,43 @@
 import { Credential } from "db/schemas";
-
+import { decryptCredentialData } from "common/utils";
+import { placeHyperliquidOrder } from "../orders/hyperliquid";
+import { placeLighterOrder } from "../orders/lighter";
+import { placeBackpackOrder } from "../orders/backpack";
 export async function executeMarketOrder(
 	node: any,
 	inputData: any,
 ): Promise<any> {
 	console.log("Executing market order:", node.title);
 
-	const { symbol, side, amount, exchange } = node.data.metaData;
+	const { symbol, price } = node.data.metaData;
+
+	// Fetch and decrypt credentials
+	if (!node.credentialId) {
+		throw new Error("No credential specified for this node");
+	}
 
 	// Get credentials
 	const credential = await Credential.findById(node.credentialId);
 	if (!credential) {
-		throw new Error("Credentials not found");
+		throw new Error("Credential not found");
 	}
+
+	// Decrypt the credential data
+	const decryptedData = decryptCredentialData(credential.data);
 
 	// Execute order based on exchange
 	const orderResult = await placeOrder(
-		exchange || node.type,
+		node.type,
 		symbol,
-		side,
-		amount,
-		credential.data,
+		price,
+		decryptedData, // { apiKey: "...", apiSecret: "..." }
 	);
 
 	return {
 		type: "market_order",
-		exchange: exchange || node.type,
+		exchange: node.type,
 		symbol,
-		side,
-		amount,
+		price,
 		orderId: orderResult.orderId,
 		executedPrice: orderResult.executedPrice,
 		status: orderResult.status,
@@ -40,68 +49,18 @@ export async function executeMarketOrder(
 async function placeOrder(
 	exchange: string,
 	symbol: string,
-	side: "buy" | "sell",
-	amount: number,
+	price: number,
 	credentials: any,
 ): Promise<any> {
 	// Implement exchange-specific logic
 	switch (exchange) {
 		case "hyperliquid":
-			return placeHyperliquidOrder(symbol, side, amount, credentials);
+			return placeHyperliquidOrder(symbol, price, credentials);
 		case "lighter":
-			return placeLighterOrder(symbol, side, amount, credentials);
+			return placeLighterOrder(symbol, price, credentials);
 		case "backpack":
-			return placeBackpackOrder(symbol, side, amount, credentials);
+			return placeBackpackOrder(symbol, price, credentials);
 		default:
 			throw new Error(`Unsupported exchange: ${exchange}`);
 	}
-}
-
-async function placeHyperliquidOrder(
-	symbol: string,
-	side: string,
-	amount: number,
-	credentials: any,
-): Promise<any> {
-	// TODO: Implement actual Hyperliquid API call
-	console.log("Placing Hyperliquid order:", { symbol, side, amount });
-
-	// Mock response
-	return {
-		orderId: `HL-${Date.now()}`,
-		executedPrice: 50000, // Mock price
-		status: "filled",
-	};
-}
-
-async function placeLighterOrder(
-	symbol: string,
-	side: string,
-	amount: number,
-	credentials: any,
-): Promise<any> {
-	// TODO: Implement actual Lighter API call
-	console.log("Placing Lighter order:", { symbol, side, amount });
-
-	return {
-		orderId: `LT-${Date.now()}`,
-		executedPrice: 50000,
-		status: "filled",
-	};
-}
-
-async function placeBackpackOrder(
-	symbol: string,
-	side: string,
-	amount: number,
-	credentials: any,
-): Promise<any> {
-	// TODO: Implement actual Backpack API call
-	console.log("Placing Backpack order:", { symbol, side, amount });
-
-	return {
-		orderId: `BP-${Date.now()}`,
-		executedPrice: 50000,
-		status: "filled",
-	};
 }
