@@ -12,7 +12,7 @@ export interface NodeType {
 		kind: "TRIGGER" | "ACTION";
 	};
 	workflowId: string;
-	credentials?: Credential[];
+	credentialsId?: string;
 }
 
 export interface Credential {

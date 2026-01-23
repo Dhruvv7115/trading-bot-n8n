@@ -105,13 +105,14 @@ const nodeSchema = new Schema({
 			required: true,
 		},
 	},
-	credentials: [
-		{
-			type: Schema.Types.ObjectId,
-			ref: "Credential",
-			required: false,
+	credentialId: {
+		type: Schema.Types.ObjectId,
+		ref: "Credential",
+		// Only required for nodes that need credentials (not time/price triggers)
+		required: function () {
+			return ["hyperliquid", "lighter", "backpack"].includes(this.type);
 		},
-	],
+	},
 });
 
 const workflowSchema = new Schema({
