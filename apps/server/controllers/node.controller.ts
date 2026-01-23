@@ -6,7 +6,7 @@ import {
 	UpdateNodeSchemaBody,
 	UpdateNodeSchemaParams,
 } from "common/types";
-import { Edge, Node, Workflow } from "db/schemas";
+import { Credential, Edge, Node, Workflow } from "db/schemas";
 import type { Request, Response } from "express";
 import { isValidObjectId } from "mongoose";
 
@@ -48,6 +48,27 @@ const createNode = async (req: Request, res: Response) => {
 					"You're unauthorised to create a node on someone else's workflow.",
 			});
 			return;
+		}
+
+		// If credentialId provided, verify it belongs to user
+		if (data.credentialId) {
+			const credential = await Credential.findOne({
+				_id: data.credentialId,
+				userId: req.userId,
+			});
+
+			if (!credential) {
+				return res.status(404).json({
+					message: "Credential not found or unauthorized.",
+				});
+			}
+
+			// Verify credential type matches node type
+			if (credential.type !== data.type) {
+				return res.status(400).json({
+					message: `Credential type '${credential.type}' doesn't match node type '${data.type}'`,
+				});
+			}
 		}
 		const node = await Node.create({
 			id: data.id,

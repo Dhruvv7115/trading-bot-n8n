@@ -4,8 +4,9 @@
   "type": "module",
   "private": true,
   "exports": {
-    "./types": "./index.ts",
-    "./configs": "./config.ts"
+    "./types": "./type.ts",
+    "./configs": "./config.ts",
+    "./utils": "./util.ts"
   },
   "devDependencies": {
     "@types/bun": "latest"

@@ -53,7 +53,18 @@ const credentialSchema = new Schema(
 		name: String,
 		type: {
 			type: String,
-			enum: ["api_key", "password", "oauth"],
+			enum: [
+				"hyperliquid",
+				"lighter",
+				"backpack",
+				// for future use
+				// "email",
+				// "sms",
+				// "whatsapp",
+				// "telegram",
+				// "discord",
+				// "slack",
+			],
 			required: true,
 		},
 		data: {

@@ -1,4 +1,4 @@
-import z, { string } from "zod";
+import z from "zod";
 
 // ========= BASE SCHEMAS =========
 export * from "./nodes.types";
@@ -59,6 +59,7 @@ const nodeBaseSchema = z.object({
 		x: z.number(),
 		y: z.number(),
 	}),
+	credentialId: mongoIdSchema.optional(),
 });
 
 export const CreateNodeSchemaBody = nodeBaseSchema;
@@ -121,4 +122,9 @@ export const UpdateCredentialSchemaBody = CreateCredentialSchemaBody.partial();
 export const CredentialParamsSchema = z.object({
 	id: mongoIdSchema,
 });
+
 export const UpdateCredentialSchemaParams = CredentialParamsSchema;
+
+export const GetCredentialSchemaParams = z.object({
+	type: z.enum(["hyperliquid", "lighter", "backpack"]),
+});

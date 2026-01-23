@@ -1,9 +1,15 @@
 import { Router } from "express";
-import { createCredential, updateCredential } from "../controllers/credential.controller";
+import {
+	createCredential,
+	deleteCredential,
+	getCredentialByType,
+	updateCredential,
+} from "../controllers/credential.controller";
+import { authMiddleware } from "../middleware";
 
 const router = Router();
 
-router.route("/").post(createCredential);
-router.route("/:id").patch(updateCredential);
+router.route("/").post(authMiddleware, createCredential);
+router.route("/:id").patch(authMiddleware, updateCredential);
 
 export default router;
