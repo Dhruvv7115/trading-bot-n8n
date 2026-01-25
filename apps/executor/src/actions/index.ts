@@ -6,7 +6,7 @@ export async function executeAction(node: any, inputData: any): Promise<any> {
 		case "hyperliquid":
 		case "lighter":
 		case "backpack":
-			// return executeMarketOrder(node, inputData);
+			return executeMarketOrder(node, inputData);
 		case "notification":
 			return executeNotification(node, inputData);
 		default:

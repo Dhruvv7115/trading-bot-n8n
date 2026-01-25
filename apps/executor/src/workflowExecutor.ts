@@ -74,7 +74,7 @@ export async function executeWorkflow(
 		await Execution.findByIdAndUpdate(
 			context.executionId,
 			{
-				status: "success",
+				status: "SUCCESS",
 				endTime: new Date(),
 				data: Object.fromEntries(context.executionData),
 			},
@@ -94,7 +94,7 @@ export async function executeWorkflow(
 		// Update execution as failed
 		if (context.executionId) {
 			await Execution.findByIdAndUpdate(context.executionId, {
-				status: "error",
+				status: "FAILURE",
 				stoppedAt: new Date(),
 				error: {
 					message: error.message,
@@ -160,7 +160,7 @@ async function executeNode(
 		context.executionData.set(node.id, {
 			nodeId: node.id,
 			title: node.title,
-			status: "success",
+			status: "SUCCESS",
 			input: inputData,
 			output,
 			executedAt: new Date(),
@@ -192,7 +192,7 @@ async function executeNode(
 		context.executionData.set(node.id, {
 			nodeId: node.id,
 			title: node.title,
-			status: "error",
+			status: "FAILURE",
 			input: inputData,
 			error: {
 				message: error.message,
