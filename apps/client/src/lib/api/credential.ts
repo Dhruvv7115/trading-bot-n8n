@@ -10,6 +10,10 @@ export const credentialApi = {
 		const response = await apiClient.post("/credential", data);
 		return response.data;
 	},
+	getAll: async () => {
+		const response = await apiClient.get("/credential");
+		return response.data;
+	},
 	update: async (
 		id: string,
 		data: z.infer<typeof UpdateCredentialSchemaBody>,

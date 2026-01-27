@@ -22,6 +22,8 @@ export default function DashboardLayout({
 		.filter((p) => p !== "")
 		.map((p) => p.charAt(0).toUpperCase() + p.slice(1));
 
+	path.length !== 1 ? path.unshift("Dashboard") : null;
+
 	const navigate = useNavigate();
 	return (
 		<SidebarProvider defaultOpen={false}>
@@ -32,10 +34,6 @@ export default function DashboardLayout({
 						<SidebarTrigger />
 						<Breadcrumb>
 							<BreadcrumbList>
-								<BreadcrumbItem>
-									<BreadcrumbLink href="/">Home</BreadcrumbLink>
-								</BreadcrumbItem>
-								<BreadcrumbSeparator />
 								{path.map((p, i) =>
 									i < path.length - 1 ? (
 										<>
