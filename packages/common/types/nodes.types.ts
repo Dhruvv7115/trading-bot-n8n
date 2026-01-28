@@ -15,9 +15,3 @@ export interface NodeType {
 	credentialId?: string;
 }
 
-export interface Credential {
-	id: string;
-	name: string;
-	type: "api_key" | "password" | "oauth";
-	data: any;
-}
