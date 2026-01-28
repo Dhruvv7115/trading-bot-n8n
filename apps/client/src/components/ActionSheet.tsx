@@ -84,7 +84,7 @@ export default function ActionSheet({
 								<div>
 									Select Credential
 									<Select
-										value={(metaData as TradingMetaData).credentialId}
+										value={(metaData as TradingMetaData).credentialId || ""}
 										onValueChange={(value) => {
 											setMetaData({
 												...metaData,
@@ -94,7 +94,13 @@ export default function ActionSheet({
 									>
 										<SelectTrigger className="w-full">
 											<SelectValue placeholder="Select a Credential">
-												{(metaData as TradingMetaData).credentialId}
+												{
+													credentials.find(
+														(credential) =>
+															credential._id ===
+															(metaData as TradingMetaData).credentialId,
+													)?.name || ""
+												}
 											</SelectValue>
 										</SelectTrigger>
 										<SelectContent>
