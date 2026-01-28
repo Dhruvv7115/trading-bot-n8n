@@ -5,5 +5,4 @@ export type TradingMetaData = {
 	type: "LONG" | "SHORT";
 	quantity: number;
 	symbol: AssetType;
-	credentialId: string;
 };

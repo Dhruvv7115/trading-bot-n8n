@@ -83,6 +83,7 @@ const createNode = async (req: Request, res: Response) => {
 				x: data.position.x,
 				y: data.position.y,
 			},
+			credentialId: data?.credentialId,
 			workflowId,
 		});
 
@@ -98,10 +99,11 @@ const createNode = async (req: Request, res: Response) => {
 			node,
 		});
 		return;
-	} catch (error) {
-		console.error(error);
+	} catch (error: any) {
+		console.error(error.message);
 		res.status(500).json({
 			message: "Something went bonkersss!!!",
+			error: error.message,
 		});
 		return;
 	}
