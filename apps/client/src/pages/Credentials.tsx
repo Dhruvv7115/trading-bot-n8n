@@ -4,13 +4,6 @@ import { toast } from "sonner"; // or your toast library
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Calendar, Key, Plus, Search, Trash2 } from "lucide-react";
-import {
-	Dialog,
-	DialogContent,
-	DialogDescription,
-	DialogHeader,
-	DialogTitle,
-} from "@/components/ui/dialog";
 import CredentialDialog from "@/components/credentials/CredentialDialog";
 
 export default function CredentialPage() {
@@ -156,8 +149,8 @@ export default function CredentialPage() {
 			<CredentialDialog
 				onSubmit={handleSubmit}
 				onCancel={() => setDialogOpen(false)}
-				open={editDialogOpen}
-				onOpenChange={setEditDialogOpen}
+				open={dialogOpen}
+				onOpenChange={setDialogOpen}
 				title="Edit Credential"
 				description="Edit your API credentials below"
 				credential={editCredential}
