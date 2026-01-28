@@ -19,6 +19,7 @@ import { useState } from "react";
 import { SUPPORTED_ACTIONS } from "common/configs";
 import type { ActionType, TradingMetaData } from "common/types";
 import ExchangeMetaData from "./nodes/actions/action-metadata/ExchangeMetaData";
+import useCredentials from "@/hooks/use-credentials";
 
 export default function ActionSheet({
 	onActionSelect,
@@ -28,6 +29,7 @@ export default function ActionSheet({
 	const [selectedAction, setSelectedAction] = useState<ActionType>(
 		SUPPORTED_ACTIONS[0].id,
 	);
+	const { credentials } = useCredentials();
 	const [metaData, setMetaData] = useState<TradingMetaData | {}>({});
 	return (
 		<Sheet open>
@@ -73,10 +75,49 @@ export default function ActionSheet({
 					{(selectedAction === "hyperliquid" ||
 						selectedAction === "lighter" ||
 						selectedAction === "backpack") && (
-						<ExchangeMetaData
-							metaData={metaData as TradingMetaData}
-							setMetaData={setMetaData}
-						/>
+						<>
+							<ExchangeMetaData
+								metaData={metaData as TradingMetaData}
+								setMetaData={setMetaData}
+							/>
+							{credentials.length > 0 && (
+								<div>
+									Select Credential
+									<Select
+										value={(metaData as TradingMetaData).credentialId}
+										onValueChange={(value) => {
+											setMetaData({
+												...metaData,
+												credentialId: value,
+											});
+										}}
+									>
+										<SelectTrigger className="w-full">
+											<SelectValue placeholder="Select a Credential">
+												{(metaData as TradingMetaData).credentialId}
+											</SelectValue>
+										</SelectTrigger>
+										<SelectContent>
+											<SelectGroup>
+												{credentials.map((credential) => (
+													<SelectItem
+														key={credential._id}
+														value={credential._id}
+													>
+														<div className="flex-row gap-2">
+															<div>{credential.name}</div>
+															<div className="text-xs text-muted-foreground">
+																{credential.description}
+															</div>
+														</div>
+													</SelectItem>
+												))}
+											</SelectGroup>
+										</SelectContent>
+									</Select>
+								</div>
+							)}
+						</>
 					)}
 				</div>
 				<SheetFooter>
