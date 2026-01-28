@@ -5,9 +5,9 @@ import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Calendar, Key, Plus, Search, Trash2 } from "lucide-react";
 import CredentialDialog from "@/components/credentials/CredentialDialog";
+import useCredentials from "@/hooks/use-credentials";
 
 export default function CredentialPage() {
-	const [credentials, setCredentials] = useState<any[]>([]);
 	const [dialogOpen, setDialogOpen] = useState<boolean>(false);
 	const [editDialogOpen, setEditDialogOpen] = useState<boolean>(false);
 	const [editCredential, setEditCredential] = useState<any>(null);
@@ -43,14 +43,11 @@ export default function CredentialPage() {
 				throw error;
 			});
 	};
-	const fetchCredentials = async () => {
-		const response = await credentialApi.getAll();
-		console.log(response);
-		setCredentials(response.credentials);
-	};
-	useEffect(() => {
-		fetchCredentials();
-	}, [handleEditSubmit, handleSubmit]);
+
+	const { credentials } = useCredentials([
+		handleEditSubmit,
+		handleSubmit,
+	]);
 
 	return (
 		<div className="w-full p-4 flex flex-col">
