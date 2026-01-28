@@ -1,7 +1,6 @@
-import { CredentialForm } from "@/components/credentials/CredentialForm";
 import { credentialApi } from "@/lib/api";
 import { toast } from "sonner"; // or your toast library
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Calendar, Key, Plus, Search, Trash2 } from "lucide-react";
 import CredentialDialog from "@/components/credentials/CredentialDialog";

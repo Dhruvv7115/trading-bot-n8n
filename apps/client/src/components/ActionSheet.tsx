@@ -17,19 +17,26 @@ import {
 } from "@/components/ui/select";
 import { useState } from "react";
 import { SUPPORTED_ACTIONS } from "common/configs";
-import type { ActionType, TradingMetaData } from "common/types";
+import type { ActionType, Credential, TradingMetaData } from "common/types";
 import ExchangeMetaData from "./nodes/actions/action-metadata/ExchangeMetaData";
 import useCredentials from "@/hooks/use-credentials";
 
 export default function ActionSheet({
 	onActionSelect,
 }: {
-	onActionSelect: (action: ActionType, metaData: TradingMetaData) => void;
+	onActionSelect: (
+		action: ActionType,
+		metaData: TradingMetaData,
+		credentialId: string,
+	) => void;
 }) {
 	const [selectedAction, setSelectedAction] = useState<ActionType>(
 		SUPPORTED_ACTIONS[0].id,
 	);
 	const { credentials } = useCredentials();
+	const [selectedCredential, setSelectedCredential] = useState<string>(
+		credentials[0]?._id || "",
+	);
 	const [metaData, setMetaData] = useState<TradingMetaData | {}>({});
 	return (
 		<Sheet open>
@@ -84,23 +91,16 @@ export default function ActionSheet({
 								<div>
 									Select Credential
 									<Select
-										value={(metaData as TradingMetaData).credentialId || ""}
+										value={selectedCredential}
 										onValueChange={(value) => {
-											setMetaData({
-												...metaData,
-												credentialId: value,
-											});
+											setSelectedCredential(value);
 										}}
 									>
 										<SelectTrigger className="w-full">
 											<SelectValue placeholder="Select a Credential">
-												{
-													credentials.find(
-														(credential) =>
-															credential._id ===
-															(metaData as TradingMetaData).credentialId,
-													)?.name || ""
-												}
+												{credentials.find(
+													(credential) => credential._id === selectedCredential,
+												)?.name || ""}
 											</SelectValue>
 										</SelectTrigger>
 										<SelectContent>
@@ -130,7 +130,11 @@ export default function ActionSheet({
 					<Button
 						type="submit"
 						onClick={() => {
-							onActionSelect(selectedAction, metaData as TradingMetaData);
+							onActionSelect(
+								selectedAction,
+								metaData as TradingMetaData,
+								selectedCredential,
+							);
 						}}
 					>
 						Create Action

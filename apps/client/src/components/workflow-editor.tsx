@@ -117,6 +117,7 @@ export default function WorkflowEditor({
 	const onActionSelect = async (
 		action: ActionType,
 		metaData: TradingMetaData,
+		credentialId: string,
 	) => {
 		if (!metaData.type) {
 			toast.error("Please enter the type of trade");
@@ -140,6 +141,7 @@ export default function WorkflowEditor({
 				metaData,
 				kind: "ACTION",
 			},
+			credentialId: credentialId,
 		};
 		setNodes([...nodes, newNode]);
 		setEdges([
@@ -205,7 +207,9 @@ export default function WorkflowEditor({
 				</div>
 				<div className="flex items-center gap-2">
 					<Button
-						onClick={() => {console.log(workflowId); navigate(`/workflow/${workflowId}/executions`)}}
+						onClick={() => {
+							navigate(`/workflow/${workflowId}/executions`);
+						}}
 						variant="outline"
 						className="bg-white border-neutral-200 hover:bg-neutral-100 text-neutral-900 gap-2"
 					>
@@ -253,8 +257,8 @@ export default function WorkflowEditor({
 			)}
 			{selectAction && (
 				<ActionSheet
-					onActionSelect={(action, metaData) =>
-						onActionSelect(action, metaData)
+					onActionSelect={(action, metaData, credentialId) =>
+						onActionSelect(action, metaData, credentialId)
 					}
 				/>
 			)}
