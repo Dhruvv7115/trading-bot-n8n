@@ -51,6 +51,21 @@ export default function EditWorkflowPage() {
 		}
 	};
 
+	// Helper function to sanitize nodes - remove React Flow internal properties
+	const sanitizeNode = (node: NodeType): NodeType => {
+		return {
+			id: node.id,
+			position: node.position,
+			type: node.type,
+			title: node.title,
+			description: node.description,
+			data: node.data,
+			credentialId: node.credentialId,
+			...(node.workflowId && { workflowId: node.workflowId }),
+			...(node.credentialId && { credentialId: node.credentialId }),
+		};
+	};
+
 	const handleSave = async (
 		name: string,
 		currentNodes: NodeType[],
@@ -75,12 +90,13 @@ export default function EditWorkflowPage() {
 
 			// Create or Update nodes
 			const nodePromises = currentNodes.map((node) => {
+				const cleanNode = sanitizeNode(node);
 				if (originalNodeIds.has(node.id)) {
 					// Update
-					return nodeApi.update(id, node.id, node);
+					return nodeApi.update(id, node.id, cleanNode);
 				} else {
 					// Create
-					return nodeApi.create(id, node);
+					return nodeApi.create(id, cleanNode);
 				}
 			});
 			await Promise.all(nodePromises);
