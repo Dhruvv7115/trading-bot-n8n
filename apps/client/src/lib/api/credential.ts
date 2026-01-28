@@ -1,6 +1,7 @@
 import { apiClient } from "./client";
 import {
 	CreateCredentialSchemaBody,
+	GetCredentialSchemaBody,
 	UpdateCredentialSchemaBody,
 } from "common/types";
 import { z } from "zod";
@@ -12,6 +13,14 @@ export const credentialApi = {
 	},
 	getAll: async () => {
 		const response = await apiClient.get("/credential");
+		return response.data;
+	},
+	getOne: async (id: string) => {
+		const response = await apiClient.get(`/credential/${id}`);
+		return response.data;
+	},
+	getByType: async (data: z.infer<typeof GetCredentialSchemaBody>) => {
+		const response = await apiClient.get(`/credential/type`, { params: data });
 		return response.data;
 	},
 	update: async (

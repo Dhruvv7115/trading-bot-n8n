@@ -1,5 +1,6 @@
 import {
 	CreateCredentialSchemaBody,
+	GetCredentialSchemaBody,
 	GetCredentialSchemaParams,
 	UpdateCredentialSchemaBody,
 	UpdateCredentialSchemaParams,
@@ -58,7 +59,7 @@ const getAllCredentialsOfUser = async (req: Request, res: Response) => {
 };
 
 const getCredentialByType = async (req: Request, res: Response) => {
-	const { success, data } = GetCredentialSchemaParams.safeParse(req.params);
+	const { success, data } = GetCredentialSchemaBody.safeParse(req.body);
 	if (!success) {
 		return res.status(400).json({ error: data });
 	}
@@ -75,6 +76,30 @@ const getCredentialByType = async (req: Request, res: Response) => {
 		res.status(200).json({
 			message: "Credentials fetched successfully",
 			credentials,
+		});
+	} catch (error: any) {
+		res.status(500).json({ message: error.message });
+	}
+};
+
+const getCredentialById = async (req: Request, res: Response) => {
+	const { success, data } = GetCredentialSchemaParams.safeParse(req.params);
+	if (!success) {
+		return res.status(400).json({ error: data });
+	}
+	try {
+		const { id } = data;
+
+		const credential = await Credential.findOne({
+			userId: req.userId,
+			_id: id,
+		})
+			.select("_id name type")
+			.lean();
+
+		res.status(200).json({
+			message: "Credential fetched successfully",
+			credential,
 		});
 	} catch (error: any) {
 		res.status(500).json({ message: error.message });
@@ -131,6 +156,7 @@ export {
 	createCredential,
 	getAllCredentialsOfUser,
 	getCredentialByType,
+	getCredentialById,
 	updateCredential,
 	deleteCredential,
 };

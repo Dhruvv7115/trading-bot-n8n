@@ -3,6 +3,7 @@ import {
 	createCredential,
 	deleteCredential,
 	getAllCredentialsOfUser,
+	getCredentialById,
 	getCredentialByType,
 	updateCredential,
 } from "../controllers/credential.controller";
@@ -14,6 +15,9 @@ router
 	.route("/")
 	.post(authMiddleware, createCredential)
 	.get(authMiddleware, getAllCredentialsOfUser);
-router.route("/:id").patch(authMiddleware, updateCredential);
-
+router
+	.route("/:id")
+	.get(authMiddleware, getCredentialById)
+	.patch(authMiddleware, updateCredential);
+router.route("/type").get(authMiddleware, getCredentialByType);
 export default router;

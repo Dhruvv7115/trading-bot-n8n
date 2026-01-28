@@ -13,6 +13,7 @@ import EditWorkflowPage from "./pages/EditWorkflow";
 import DashboardLayout from "./layouts/DashboardLayout";
 import { Toaster } from "sonner";
 import Executions from "./pages/Executions";
+import NewCredentialPage from "./pages/Credentials";
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
 	const token = localStorage.getItem("token");
@@ -76,6 +77,16 @@ function App() {
 						<ProtectedRoute>
 							<DashboardLayout>
 								<Executions />
+							</DashboardLayout>
+						</ProtectedRoute>
+					}
+				/>
+				<Route
+					path="/credentials"
+					element={
+						<ProtectedRoute>
+							<DashboardLayout>
+								<NewCredentialPage />
 							</DashboardLayout>
 						</ProtectedRoute>
 					}

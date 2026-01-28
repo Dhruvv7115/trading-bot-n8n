@@ -113,7 +113,20 @@ export const GetExecutionsSchema = GetExecutionsSchemaParams;
 
 export const CreateCredentialSchemaBody = z.object({
 	name: z.string(),
-	type: z.enum(["api_key", "password", "oauth"]),
+	type: z.enum([
+		"hyperliquid",
+		"lighter",
+		"backpack",
+		"binance",
+		"coinbase",
+		"smtp",
+		"imap",
+		"postgresql",
+		"mysql",
+		"google_oauth2",
+		"api_key",
+		"basic_auth",
+	]),
 	data: z.any(),
 });
 
@@ -126,5 +139,21 @@ export const CredentialParamsSchema = z.object({
 export const UpdateCredentialSchemaParams = CredentialParamsSchema;
 
 export const GetCredentialSchemaParams = z.object({
-	type: z.enum(["hyperliquid", "lighter", "backpack"]),
+	id: mongoIdSchema,
+});
+export const GetCredentialSchemaBody = z.object({
+	type: z.enum([
+		"hyperliquid",
+		"lighter",
+		"backpack",
+		"binance",
+		"coinbase",
+		"smtp",
+		"imap",
+		"postgresql",
+		"mysql",
+		"google_oauth2",
+		"api_key",
+		"basic_auth",
+	]),
 });
