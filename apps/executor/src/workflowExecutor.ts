@@ -81,6 +81,15 @@ export async function executeWorkflow(
 				},
 				// { session },
 			);
+
+			// if (triggerData?.triggeredBy === "price") {
+			// 	await Workflow.findByIdAndUpdate(workflowId, {
+			// 		active: false,
+			// 	});
+			// 	console.log(
+			// 		`🛑 Auto-deactivated workflow ${workflowId} after price trigger execution`,
+			// 	);
+			// }
 		}
 
 		// await session.commitTransaction();

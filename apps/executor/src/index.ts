@@ -5,6 +5,7 @@ import {
 	startTimeScheduler,
 	stopAllSchedules,
 } from "./services/timeScheduler";
+import { startPriceMonitor } from "./services/priceMonitor";
 
 async function main() {
 	// Connect to database
@@ -16,6 +17,8 @@ async function main() {
 	await startTimeScheduler();
 	// Start periodic sync
 	startPeriodicSync();
+	// Start price monitor
+	startPriceMonitor();
 	// Graceful shutdown
 	process.on("SIGINT", async () => {
 		console.log("\n🛑 Shutting down gracefully...");
