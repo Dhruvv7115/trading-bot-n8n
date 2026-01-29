@@ -1,4 +1,5 @@
-import axios from "axios";
+import { evaluateCondition } from "../utils/checkPriceCondition";
+import { fetchPrice } from "../utils/fetchPrice";
 
 export async function executePriceTrigger(
 	node: any,
@@ -29,6 +30,7 @@ export async function executePriceTrigger(
 			`Price condition not met, Current price: ${currentPrice}, Target price: ${targetPrice}`,
 		);
 	}
+	console.log("Price condition met, executing actions - ", node.title);
 
 	return {
 		asset,
@@ -39,15 +41,3 @@ export async function executePriceTrigger(
 	};
 }
 
-async function fetchPrice(asset: string): Promise<number> {
-	// Example: Fetch from Binance
-	console.log("Fetching price for asset:", asset);
-	const response = await axios.get(
-		`https://api.binance.com/api/v3/ticker/price?symbol=${asset}USDT`,
-	);
-	return parseFloat(response.data.price);
-}
-
-function evaluateCondition(currentPrice: number, targetPrice: number): boolean {
-	return currentPrice <= targetPrice;
-}

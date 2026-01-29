@@ -3,13 +3,14 @@ import { decryptCredentialData } from "common/utils";
 import { placeHyperliquidOrder } from "../orders/hyperliquid";
 import { placeLighterOrder } from "../orders/lighter";
 import { placeBackpackOrder } from "../orders/backpack";
+import { fetchPrice } from "../utils/fetchPrice";
 export async function executeMarketOrder(
 	node: any,
 	inputData: any,
 ): Promise<any> {
-	console.log("Executing market order:", node.title);
+	console.log("Executing action:", node.title);
 
-	const { symbol, price } = node.data.metaData;
+	const { symbol } = node.data.metaData;
 
 	// Fetch and decrypt credentials
 	if (!node.credentialId) {
@@ -23,7 +24,13 @@ export async function executeMarketOrder(
 	}
 
 	// Decrypt the credential data
-	const decryptedData = decryptCredentialData(credential.data);
+	const decryptedApikey = decryptCredentialData(credential.data.apiKey);
+	const decryptedApiSecret = decryptCredentialData(credential.data.apiSecret);
+	const decryptedData = {
+		apiKey: decryptedApikey,
+		apiSecret: decryptedApiSecret,
+	};
+	const price = await fetchPrice(symbol);
 
 	// Execute order based on exchange
 	const orderResult = await placeOrder(

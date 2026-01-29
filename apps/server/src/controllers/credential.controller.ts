@@ -23,11 +23,15 @@ const createCredential = async (req: Request, res: Response) => {
 		const { name, type, data } = body.data;
 
 		// Encrypt sensitive data before storing
-		const encryptedData = encryptCredentialData(data);
+		const encryptedApiKey = encryptCredentialData(data.apiKey);
+		const encryptedApiSecret = encryptCredentialData(data.apiSecret);
 		const credential = await Credential.create({
 			name,
 			type,
-			data: encryptedData,
+			data: {
+				apiKey: encryptedApiKey,
+				apiSecret: encryptedApiSecret,
+			},
 			userId: req.userId,
 		});
 		res.status(201).json({

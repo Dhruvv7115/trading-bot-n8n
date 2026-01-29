@@ -72,7 +72,6 @@ const credentialSchema = new Schema(
 		data: {
 			type: Schema.Types.Mixed, // encrypted
 			required: true,
-			select: false,
 		},
 		userId: {
 			type: Schema.Types.ObjectId,

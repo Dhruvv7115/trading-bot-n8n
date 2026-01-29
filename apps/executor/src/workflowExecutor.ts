@@ -70,16 +70,18 @@ export async function executeWorkflow(
 			// session
 		);
 
-		// 6. Update execution as successful
-		await Execution.findByIdAndUpdate(
-			context.executionId,
-			{
-				status: "SUCCESS",
-				endTime: new Date(),
-				data: Object.fromEntries(context.executionData),
-			},
-			// { session },
-		);
+		if (result) {
+			// 6. Update execution as successful
+			await Execution.findByIdAndUpdate(
+				context.executionId,
+				{
+					status: "SUCCESS",
+					endTime: new Date(),
+					data: Object.fromEntries(context.executionData),
+				},
+				// { session },
+			);
+		}
 
 		// await session.commitTransaction();
 
