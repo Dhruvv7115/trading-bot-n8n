@@ -9,6 +9,8 @@ import {
 	type OnEdgesChange,
 	type NodeChange,
 	type FinalConnectionState,
+	BackgroundVariant,
+	Background,
 } from "@xyflow/react";
 import { toast } from "sonner";
 import "@xyflow/react/dist/style.css";
@@ -244,6 +246,11 @@ export default function WorkflowEditor({
 					className="bg-neutral-50"
 				>
 					{/* Background or other controls could go here */}
+					<Background
+						color="#ccc"
+						size={2}
+						variant={BackgroundVariant.Dots}
+					/>
 				</ReactFlow>
 			</div>
 

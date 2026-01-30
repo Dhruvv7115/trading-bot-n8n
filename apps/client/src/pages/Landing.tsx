@@ -35,10 +35,10 @@ export default function Landing() {
 				<div className="absolute top-20 left-1/2 -translate-x-1/2 w-[500px] h-[500px] bg-neutral-200/50 rounded-full blur-[100px] -z-10" />
 
 				<div className="container mx-auto text-center max-w-4xl">
-					<h1 className="text-5xl md:text-7xl font-bold tracking-tight mb-8 bg-gradient-to-br from-neutral-900 via-neutral-700 to-neutral-500 bg-clip-text text-transparent">
+					<h1 className="text-5xl md:text-7xl font-bold tracking-tight mb-8 bg-linear-to-br from-neutral-900 via-neutral-700 to-neutral-500 bg-clip-text text-transparent">
 						Automate your trading strategies with ease.
 					</h1>
-					<p className="text-lg md:text-xl text-neutral-500 mb-10 max-w-2xl mx-auto leading-relaxed">
+					<p className="text-sm md:text-lg text-neutral-500 mb-10 md:max-w-lg max-w-sm mx-auto leading-relaxed">
 						Build, test, and deploy powerful trading bots using our intuitive
 						visual workflow builder. No coding required.
 					</p>
