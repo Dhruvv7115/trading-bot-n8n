@@ -13,6 +13,7 @@
     "axios": "^1.13.2",
     "common": "*",
     "db": "*",
+    "hyperliquid": "^1.7.7",
     "mongoose": "^9.1.5"
   },
   "devDependencies": {

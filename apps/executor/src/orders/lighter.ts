@@ -1,8 +1,16 @@
-export async function placeLighterOrder(
-	symbol: string,
-	price: number,
-	credentials: any,
-): Promise<any> {
+export async function placeLighterOrder({
+	symbol,
+	price,
+	credentials,
+	type,
+	quantity,
+}: {
+	symbol: string;
+	price: number;
+	credentials: any;
+	type: "LONG" | "SHORT";
+	quantity: number;
+}): Promise<any> {
 	// TODO: Implement actual Lighter API call
 	console.log("Placing Lighter order:", { symbol, price });
 
