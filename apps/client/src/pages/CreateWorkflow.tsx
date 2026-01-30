@@ -16,7 +16,7 @@ export default function CreateWorkflowPage() {
 			// 1. Create Workflow
 			const response = await workflowApi.create({
 				name,
-				active: false,
+				active: true,
 			});
 
 			if (!response.workflow || !response.workflow._id) {
