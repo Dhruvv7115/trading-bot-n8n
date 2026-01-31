@@ -11,6 +11,8 @@ import {
 	type FinalConnectionState,
 	BackgroundVariant,
 	Background,
+	BezierEdge,
+	MarkerType,
 } from "@xyflow/react";
 import { toast } from "sonner";
 import "@xyflow/react/dist/style.css";
@@ -37,6 +39,7 @@ import {
 	DialogTitle,
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
+import { CustomEdge } from "./custom-edge";
 
 const nodeTypes = {
 	time: Time,
@@ -45,6 +48,10 @@ const nodeTypes = {
 	lighter: Lighter,
 	backpack: Backpack,
 };
+
+const edgeTypes = {
+	custom: CustomEdge,
+};	
 
 interface WorkflowEditorProps {
 	workflowId?: string;
@@ -81,6 +88,7 @@ export default function WorkflowEditor({
 		if (initialNodes.length > 0) setNodes(initialNodes);
 		if (initialEdges.length > 0) setEdges(initialEdges);
 		if (initialName) setWorkflowName(initialName);
+		console.log("edges", edges);
 	}, [initialNodes, initialEdges, initialName]);
 
 	const onNodesChange = useCallback(
@@ -238,6 +246,7 @@ export default function WorkflowEditor({
 					nodes={nodes}
 					edges={edges}
 					nodeTypes={nodeTypes}
+					edgeTypes={edgeTypes}
 					onNodesChange={onNodesChange}
 					onEdgesChange={onEdgesChange}
 					onConnect={onConnect}
