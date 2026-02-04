@@ -10,6 +10,7 @@ export default function CredentialPage() {
 	const [dialogOpen, setDialogOpen] = useState<boolean>(false);
 	const [editDialogOpen, setEditDialogOpen] = useState<boolean>(false);
 	const [editCredential, setEditCredential] = useState<any>(null);
+	console.log(editCredential);
 
 	const handleSubmit = useCallback((data: any) => {
 		credentialApi
@@ -140,6 +141,7 @@ export default function CredentialPage() {
 
 			{dialogOpen && (
 				<CredentialDialog
+					type="Create"
 					onSubmit={handleSubmit}
 					onCancel={() => setDialogOpen(false)}
 					open={dialogOpen}
@@ -151,6 +153,7 @@ export default function CredentialPage() {
 			)}
 			{editDialogOpen && (
 				<CredentialDialog
+					type="Update"
 					onSubmit={handleEditSubmit}
 					onCancel={() => setEditDialogOpen(false)}
 					open={editDialogOpen}

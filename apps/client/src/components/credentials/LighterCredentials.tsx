@@ -1,14 +1,6 @@
 import React, { useState } from "react";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { AlertCircle, Shield } from "lucide-react";
+import { Shield } from "lucide-react";
 import { Label } from "@/components/ui/label";
-import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
-} from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
@@ -16,6 +8,7 @@ import { Link } from "react-router-dom";
 import { exchangeInfo } from "./exchangeInfo";
 
 interface LighterCredentialsProps {
+	type: "Create" | "Update";
 	error: string;
 	setError: (error: string) => void;
 	loading: boolean;
@@ -26,6 +19,7 @@ interface LighterCredentialsProps {
 }
 
 export default function LighterCredentials({
+	type = "Create",
 	error,
 	setError,
 	loading,
@@ -34,12 +28,17 @@ export default function LighterCredentials({
 	onCancel,
 	credential,
 }: LighterCredentialsProps) {
-	console.log(credential);
+	console.log("type: ", type);
 	const [name, setName] = useState(credential?.name || "");
 
-	const [apiKey, setApiKey] = useState(credential?.data?.apiKey || "");
-	const [walletAddress, setWalletAddress] = useState(
-		credential?.data?.walletAddress || "",
+	const [privateKey, setPrivateKey] = useState(
+		credential?.data?.privateKey || "",
+	);
+	const [apiKeyIndex, setApiKeyIndex] = useState(
+		credential?.data?.apiKeyIndex || "",
+	);
+	const [accountIndex, setAccountIndex] = useState(
+		credential?.data?.accountIndex || "",
 	);
 
 	const handleSubmit = async (e: React.FormEvent) => {
@@ -49,37 +48,99 @@ export default function LighterCredentials({
 
 		try {
 			// Validation
-			if (!name.trim()) {
+			if (type === "Create" && !name.trim()) {
 				setError("Please enter a credential name");
 				setLoading(false);
 				return;
 			}
 
-			if (!apiKey.trim()) {
-				setError("Please enter an API Key");
+			if (type === "Create" && !privateKey.trim()) {
+				setError("Please enter an Private Key");
+				setLoading(false);
+				return;
+			}
+			if (type === "Create" && !apiKeyIndex.trim()) {
+				setError("Please enter an API Key Index");
 				setLoading(false);
 				return;
 			}
 
-			if (!walletAddress.trim()) {
-				setError("Please enter an API Secret");
+			if (type === "Create" && !accountIndex.trim()) {
+				setError("Please enter an Account Index");
 				setLoading(false);
 				return;
 			}
+			if (
+				type === "Update" &&
+				!name.trim() &&
+				!privateKey.trim() &&
+				!apiKeyIndex.trim() &&
+				!accountIndex.trim()
+			) {
+				setError("Please enter at least one field to update");
+				setLoading(false);
+				return;
+			}
+			if (type === "Create") {
+				onSubmit({
+					name: name.trim(),
+					type: "lighter",
+					data: {
+						privateKey: privateKey.trim(),
+						apiKeyIndex: apiKeyIndex.trim(),
+						accountIndex: accountIndex.trim(),
+					},
+				});
+			} else {
+				const updateData: {
+					name?: string;
+					data?: {
+						privateKey?: string;
+						apiKeyIndex?: string;
+						accountIndex?: string;
+					};
+				} = {};
+				// Check if name has changed
+				if (name.trim() && name.trim() !== credential?.name) {
+					updateData.name = name.trim();
+				}
+				// Build data object with only changed fields
+				const dataFields: {
+					privateKey?: string;
+					apiKeyIndex?: string;
+					accountIndex?: string;
+				} = {};
+				if (
+					privateKey.trim() &&
+					privateKey.trim() !== credential?.data?.privateKey
+				) {
+					dataFields.privateKey = privateKey.trim();
+				}
+				if (
+					apiKeyIndex.trim() &&
+					apiKeyIndex.trim() !== credential?.data?.apiKeyIndex
+				) {
+					dataFields.apiKeyIndex = apiKeyIndex.trim();
+				}
+				if (
+					accountIndex.trim() &&
+					accountIndex.trim() !== credential?.data?.accountIndex
+				) {
+					dataFields.accountIndex = accountIndex.trim();
+				}
 
-			await onSubmit({
-				name: name.trim(),
-				type: "lighter",
-				data: {
-					apiKey: apiKey.trim(),
-					walletAddress: walletAddress.trim(),
-				},
-			});
+				// Only add data object if there are changes in apiKey or walletAddress
+				if (Object.keys(dataFields).length > 0) {
+					updateData.data = dataFields;
+				}
+				onSubmit(updateData);
+			}
 
 			// Reset form
 			setName("");
-			setApiKey("");
-			setWalletAddress("");
+			setPrivateKey("");
+			setApiKeyIndex("");
+			setAccountIndex("");
 		} catch (err: any) {
 			setError(err.message || "Failed to create credential");
 		} finally {
@@ -92,41 +153,60 @@ export default function LighterCredentials({
 		<div className="w-full max-w-2xl mx-auto">
 			<form onSubmit={handleSubmit}>
 				<div className="flex flex-col gap-4 mb-4">
-
-					{/* API Key */}
+					{/* Private Key */}
 					<div className="space-y-2">
-						<Label htmlFor="apiKey">
-							API Key
+						<Label htmlFor="privateKey">
+							Private Key
 							<span className="text-red-500 ml-1">*</span>
 						</Label>
 						<Input
-							id="apiKey"
+							id="privateKey"
 							type="password"
-							placeholder="Enter your API key"
-							value={apiKey}
-							onChange={(e) => setApiKey(e.target.value)}
+							placeholder="Enter your Private Key"
+							value={privateKey}
+							onChange={(e) => setPrivateKey(e.target.value)}
 							disabled={loading}
 							className="font-mono text-sm"
 						/>
 					</div>
 
-					{/* API Secret */}
+					{/* API Key Index */}
 					<div className="space-y-2">
-						<Label htmlFor="walletAddress">
-							Wallet Address
+						<Label htmlFor="apiKeyIndex">
+							API Key Index
 							<span className="text-red-500 ml-1">*</span>
 						</Label>
 						<Input
-							id="walletAddress"
+							id="apiKeyIndex"
 							type="text"
-							placeholder="Enter your wallet address"
-							value={walletAddress}
-							onChange={(e) => setWalletAddress(e.target.value)}
+							placeholder="Enter your API Key Index"
+							value={apiKeyIndex}
+							onChange={(e) => setApiKeyIndex(e.target.value)}
 							disabled={loading}
 							className="font-mono text-sm"
 						/>
 						<p className="text-xs text-neutral-500">
-							Your API secret will be encrypted before storage
+							Your API Key Index will be encrypted before storage
+						</p>
+					</div>
+
+					{/* Account Index */}
+					<div className="space-y-2">
+						<Label htmlFor="accountIndex">
+							Account Index
+							<span className="text-red-500 ml-1">*</span>
+						</Label>
+						<Input
+							id="accountIndex"
+							type="text"
+							placeholder="Enter your Account Index"
+							value={accountIndex}
+							onChange={(e) => setAccountIndex(e.target.value)}
+							disabled={loading}
+							className="font-mono text-sm"
+						/>
+						<p className="text-xs text-neutral-500">
+							Your Account Index will be encrypted before storage
 						</p>
 					</div>
 
@@ -164,12 +244,12 @@ export default function LighterCredentials({
 						{loading ? (
 							<>
 								<Loader2 className="w-4 h-4 mr-2 animate-spin" />
-								Creating...
+								{type === "Create" ? "Creating..." : "Updating..."}
 							</>
 						) : (
 							<>
 								<Shield className="w-4 h-4 mr-2" />
-								Create Credential
+								{type === "Create" ? "Create Credential" : "Update Credential"}
 							</>
 						)}
 					</Button>

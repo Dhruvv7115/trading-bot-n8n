@@ -1,14 +1,6 @@
 import React, { useState } from "react";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { AlertCircle, Shield } from "lucide-react";
+import { Shield } from "lucide-react";
 import { Label } from "@/components/ui/label";
-import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
-} from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
@@ -16,6 +8,7 @@ import { Link } from "react-router-dom";
 import { exchangeInfo } from "./exchangeInfo";
 
 interface HyperliquidCredentialsProps {
+	type: "Create" | "Update";
 	error: string;
 	setError: (error: string) => void;
 	loading: boolean;
@@ -26,6 +19,7 @@ interface HyperliquidCredentialsProps {
 }
 
 export default function HyperliquidCredentials({
+	type = "Create",
 	error,
 	setError,
 	loading,
@@ -34,7 +28,6 @@ export default function HyperliquidCredentials({
 	onCancel,
 	credential,
 }: HyperliquidCredentialsProps) {
-	console.log(credential);
 	const [name, setName] = useState(credential?.name || "");
 	const [apiKey, setApiKey] = useState(credential?.data?.apiKey || "");
 	const [walletAddress, setWalletAddress] = useState(
@@ -47,32 +40,72 @@ export default function HyperliquidCredentials({
 
 		try {
 			// Validation
-			if (!name.trim()) {
+			if (!name.trim() && type === "Create") {
 				setError("Please enter a credential name");
 				setLoading(false);
 				return;
 			}
 
-			if (!apiKey.trim()) {
+			if (!apiKey.trim() && type === "Create") {
 				setError("Please enter an API Key");
 				setLoading(false);
 				return;
 			}
 
-			if (!walletAddress.trim()) {
+			if (!walletAddress.trim() && type === "Create") {
 				setError("Please enter an API Secret");
 				setLoading(false);
 				return;
 			}
 
-			await onSubmit({
-				name: name.trim(),
-				type: "hyperliquid",
-				data: {
-					apiKey: apiKey.trim(),
-					walletAddress: walletAddress.trim(),
-				},
-			});
+			if (
+				type === "Update" &&
+				!name.trim() &&
+				!walletAddress.trim() &&
+				!apiKey.trim()
+			) {
+				setError("Please enter at least one field");
+				setLoading(false);
+				return;
+			}
+
+			if (type === "Create") {
+				onSubmit({
+					name: name.trim(),
+					type: "hyperliquid",
+					data: {
+						apiKey: apiKey.trim(),
+						walletAddress: walletAddress.trim(),
+					},
+				});
+			} else {
+				// For Update, only send fields that have been modified
+				const updateData: { name?: string; data?: any } = {};
+
+				// Check if name has changed
+				if (name.trim() && name.trim() !== credential?.name) {
+					updateData.name = name.trim();
+				}
+
+				// Build data object with only changed fields
+				const dataFields: { apiKey?: string; walletAddress?: string } = {};
+				if (apiKey.trim() && apiKey.trim() !== credential?.data?.apiKey) {
+					dataFields.apiKey = apiKey.trim();
+				}
+				if (
+					walletAddress.trim() &&
+					walletAddress.trim() !== credential?.data?.walletAddress
+				) {
+					dataFields.walletAddress = walletAddress.trim();
+				}
+
+				// Only add data object if there are changes in apiKey or walletAddress
+				if (Object.keys(dataFields).length > 0) {
+					updateData.data = dataFields;
+				}
+
+				onSubmit(updateData);
+			}
 
 			// Reset form
 			setName("");
@@ -161,12 +194,12 @@ export default function HyperliquidCredentials({
 						{loading ? (
 							<>
 								<Loader2 className="w-4 h-4 mr-2 animate-spin" />
-								Creating...
+								{type === "Create" ? "Creating..." : "Updating..."}
 							</>
 						) : (
 							<>
 								<Shield className="w-4 h-4 mr-2" />
-								Create Credential
+								{type === "Create" ? "Create Credential" : "Update Credential"}
 							</>
 						)}
 					</Button>

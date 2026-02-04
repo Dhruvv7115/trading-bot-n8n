@@ -22,6 +22,7 @@ import { Input } from "../ui/input";
 import { Alert, AlertDescription } from "../ui/alert";
 import LighterCredentials from "./LighterCredentials";
 interface CredentialDialogProps {
+	type: "Create" | "Update";
 	onSubmit: (data: any) => void;
 	onCancel: () => void;
 	open: boolean;
@@ -31,6 +32,7 @@ interface CredentialDialogProps {
 	credential?: any;
 }
 function CredentialDialog({
+	type = "Create",
 	onSubmit,
 	onCancel,
 	open,
@@ -39,13 +41,13 @@ function CredentialDialog({
 	description = "Add your API credentials below",
 	credential,
 }: CredentialDialogProps) {
-	const [type, setType] = useState<CredentialType>(
+	const [credentialType, setCredentialType] = useState<CredentialType>(
 		credential?.type || "hyperliquid",
 	);
 	const [name, setName] = useState<string>(credential?.name || "");
 	const [loading, setLoading] = useState<boolean>(false);
 	const [error, setError] = useState<string>("");
-	const currentExchange = exchangeInfo[type];
+	const currentExchange = exchangeInfo[credentialType];
 	return (
 		<Dialog
 			open={open}
@@ -77,12 +79,14 @@ function CredentialDialog({
 
 					{/* Exchange Type */}
 					<div className="space-y-2">
-						<Label htmlFor="type">Exchange</Label>
+						<Label htmlFor="credentialType">Exchange</Label>
 						<Select
-							value={type}
-							onValueChange={(value) => setType(value as CredentialType)}
+							value={credentialType}
+							onValueChange={(value) =>
+								setCredentialType(value as CredentialType)
+							}
 						>
-							<SelectTrigger id="type">
+							<SelectTrigger id="credentialType">
 								<SelectValue placeholder="Select exchange" />
 							</SelectTrigger>
 							<SelectContent>
@@ -128,8 +132,9 @@ function CredentialDialog({
 							A friendly name to identify this credential
 						</p>
 					</div>
-					{type === "hyperliquid" && (
+					{credentialType === "hyperliquid" && (
 						<HyperliquidCredentials
+							type={type}
 							error={error}
 							setError={setError}
 							loading={loading}
@@ -139,8 +144,9 @@ function CredentialDialog({
 							credential={credential}
 						/>
 					)}
-					{type === "lighter" && (
+					{credentialType === "lighter" && (
 						<LighterCredentials
+							type={type}
 							error={error}
 							setError={setError}
 							loading={loading}
