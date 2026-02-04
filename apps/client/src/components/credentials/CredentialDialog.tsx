@@ -15,7 +15,7 @@ import {
 	SelectValue,
 	SelectItem,
 } from "../ui/select";
-import { exchangeInfo } from "./exchangeInfo";
+import { exchangeInfo } from "./exchange-info";
 import { useState } from "react";
 import type { CredentialType } from "common/types";
 import { Input } from "../ui/input";
@@ -102,12 +102,12 @@ function CredentialDialog({
 										Lighter
 									</div>
 								</SelectItem>
-								<SelectItem value="backpack">
+								{/* <SelectItem value="backpack">
 									<div className="flex items-center gap-2">
 										<div className="w-2 h-2 bg-green-500 rounded-full"></div>
 										Backpack
 									</div>
-								</SelectItem>
+								</SelectItem> */}
 							</SelectContent>
 						</Select>
 						<p className="text-xs text-neutral-500">

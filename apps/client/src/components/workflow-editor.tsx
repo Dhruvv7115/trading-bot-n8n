@@ -16,12 +16,12 @@ import {
 } from "@xyflow/react";
 import { toast } from "sonner";
 import "@xyflow/react/dist/style.css";
-import TriggerSheet from "@/components/TriggerSheet";
+import TriggerSheet from "@/components/trigger-sheet";
 import Time from "@/components/nodes/triggers/Time";
 import Price from "@/components/nodes/triggers/Price";
 import type { TriggerType, TriggerMetaData } from "common/types";
 import type { ActionType, TradingMetaData } from "common/types";
-import ActionSheet from "@/components/ActionSheet";
+import ActionSheet from "@/components/action-sheet";
 import Hyperliquid from "@/components/nodes/actions/Hyperliquid";
 import Lighter from "@/components/nodes/actions/Lighter";
 import Backpack from "@/components/nodes/actions/Backpack";

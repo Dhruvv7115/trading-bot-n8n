@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
 import { Link } from "react-router-dom";
-import { exchangeInfo } from "./exchangeInfo";
+import { exchangeInfo } from "./exchange-info";
 
 interface LighterCredentialsProps {
 	type: "Create" | "Update";
