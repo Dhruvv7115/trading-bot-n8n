@@ -17,9 +17,20 @@ export interface Credential {
 	name: string;
 	description: string;
 	type: CredentialType;
-	data: any;
+	data: LighterCredentialData | HyperliquidCredentialData | any;
 	createdAt: string;
 	updatedAt: string;
+}
+
+export interface LighterCredentialData {
+	privateKey: string;
+	apiKeyIndex: string;
+	accountIndex: number;
+}
+
+export interface HyperliquidCredentialData {
+	apiKey: string;
+	walletAddress: string;
 }
 
 export interface CredentialResponse {

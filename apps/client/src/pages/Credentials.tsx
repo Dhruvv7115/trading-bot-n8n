@@ -1,6 +1,6 @@
 import { credentialApi } from "@/lib/api";
 import { toast } from "sonner"; // or your toast library
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Calendar, Key, Plus, Search, Trash2 } from "lucide-react";
 import CredentialDialog from "@/components/credentials/CredentialDialog";
@@ -11,7 +11,7 @@ export default function CredentialPage() {
 	const [editDialogOpen, setEditDialogOpen] = useState<boolean>(false);
 	const [editCredential, setEditCredential] = useState<any>(null);
 
-	const handleSubmit = async (data: any) => {
+	const handleSubmit = useCallback((data: any) => {
 		credentialApi
 			.create(data)
 			.then(() => {
@@ -22,15 +22,14 @@ export default function CredentialPage() {
 				toast.error(error.message);
 				throw error;
 			});
-	};
+	}, []);
 	const onEditClick = async (credentialId: string) => {
 		const response = await credentialApi.getOne(credentialId);
-		console.log("credential:", response.credential);
 		setEditCredential(response.credential);
 		setEditDialogOpen(true);
 	};
 
-	const handleEditSubmit = async (data: any) => {
+	const handleEditSubmit = useCallback(async (data: any) => {
 		credentialApi
 			.update(editCredential._id, data)
 			.then(() => {
@@ -41,12 +40,9 @@ export default function CredentialPage() {
 				toast.error(error.message);
 				throw error;
 			});
-	};
+	}, []);
 
-	const { credentials } = useCredentials([
-		handleEditSubmit,
-		handleSubmit,
-	]);
+	const { credentials } = useCredentials([handleSubmit, handleEditSubmit]);
 
 	return (
 		<div className="w-full p-4 flex flex-col">
@@ -142,24 +138,28 @@ export default function CredentialPage() {
 				)}
 			</div>
 
-			<CredentialDialog
-				onSubmit={handleSubmit}
-				onCancel={() => setDialogOpen(false)}
-				open={dialogOpen}
-				onOpenChange={setDialogOpen}
-				title="Edit Credential"
-				description="Edit your API credentials below"
-				credential={editCredential}
-			/>
-			<CredentialDialog
-				onSubmit={handleEditSubmit}
-				onCancel={() => setEditDialogOpen(false)}
-				open={editDialogOpen}
-				onOpenChange={setEditDialogOpen}
-				title="Edit Credential"
-				description="Edit your API credentials below"
-				credential={editCredential}
-			/>
+			{dialogOpen && (
+				<CredentialDialog
+					onSubmit={handleSubmit}
+					onCancel={() => setDialogOpen(false)}
+					open={dialogOpen}
+					onOpenChange={setDialogOpen}
+					title="Edit Credential"
+					description="Edit your API credentials below"
+					credential={editCredential}
+				/>
+			)}
+			{editDialogOpen && (
+				<CredentialDialog
+					onSubmit={handleEditSubmit}
+					onCancel={() => setEditDialogOpen(false)}
+					open={editDialogOpen}
+					onOpenChange={setEditDialogOpen}
+					title="Edit Credential"
+					description="Edit your API credentials below"
+					credential={editCredential}
+				/>
+			)}
 		</div>
 	);
 }
