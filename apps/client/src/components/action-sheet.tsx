@@ -17,7 +17,7 @@ import {
 } from "@/components/ui/select";
 import { useState } from "react";
 import { SUPPORTED_ACTIONS } from "common/configs";
-import type { ActionType, Credential, TradingMetaData } from "common/types";
+import type { ActionType, TradingMetaData } from "common/types";
 import ExchangeMetaData from "./nodes/actions/action-metadata/ExchangeMetaData";
 import useCredentials from "@/hooks/use-credentials";
 
