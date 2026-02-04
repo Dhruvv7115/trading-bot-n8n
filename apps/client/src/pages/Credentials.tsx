@@ -10,7 +10,6 @@ export default function CredentialPage() {
 	const [dialogOpen, setDialogOpen] = useState<boolean>(false);
 	const [editDialogOpen, setEditDialogOpen] = useState<boolean>(false);
 	const [editCredential, setEditCredential] = useState<any>(null);
-	console.log(editCredential);
 
 	const handleSubmit = useCallback((data: any) => {
 		credentialApi
@@ -58,7 +57,7 @@ export default function CredentialPage() {
 							className="w-full pl-10 pr-4 py-2 bg-white border border-neutral-200 rounded-lg text-sm text-neutral-900 focus:outline-none focus:ring-2 focus:ring-neutral-900/10 transition-all"
 						/>
 					</div>
-					<Button className="flex items-center gap-2 px-4 py-2 bg-neutral-900 hover:bg-neutral-800 text-white text-sm font-semibold rounded-lg transition-colors">
+					<Button className="flex items-center gap-2 px-4 py-2 bg-neutral-900 hover:bg-neutral-800 text-white text-sm font-semibold rounded-lg transition-colors" onClick={() => setDialogOpen(true)}>
 						<Plus className="w-4 h-4" />
 						New Credential
 					</Button>
@@ -146,8 +145,8 @@ export default function CredentialPage() {
 					onCancel={() => setDialogOpen(false)}
 					open={dialogOpen}
 					onOpenChange={setDialogOpen}
-					title="Edit Credential"
-					description="Edit your API credentials below"
+					title="Create Credential"
+					description="Create a new API credential"
 					credential={editCredential}
 				/>
 			)}

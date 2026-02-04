@@ -118,7 +118,7 @@ export default function HyperliquidCredentials({
 		}
 	};
 
-	const currentExchange = exchangeInfo[credential?.type];
+	const currentExchange = exchangeInfo[credential?.type || "hyperliquid"];
 	return (
 		<div className="w-full max-w-2xl mx-auto">
 			<form onSubmit={handleSubmit}>
@@ -165,10 +165,10 @@ export default function HyperliquidCredentials({
 						<p className="text-xs text-blue-900">
 							Need help finding your API credentials?{" "}
 							<Link
-								to={currentExchange.docsUrl}
+								to={currentExchange?.docsUrl || "#"}
 								className="font-medium underline hover:text-blue-700"
 							>
-								View {currentExchange.name} API documentation →
+								View {currentExchange?.name} API documentation →
 							</Link>
 						</p>
 					</div>

@@ -28,7 +28,6 @@ export default function LighterCredentials({
 	onCancel,
 	credential,
 }: LighterCredentialsProps) {
-	console.log("type: ", type);
 	const [name, setName] = useState(credential?.name || "");
 
 	const [privateKey, setPrivateKey] = useState(
@@ -148,7 +147,7 @@ export default function LighterCredentials({
 		}
 	};
 
-	const currentExchange = exchangeInfo[credential?.type];
+	const currentExchange = exchangeInfo[credential?.type || "lighter"];
 	return (
 		<div className="w-full max-w-2xl mx-auto">
 			<form onSubmit={handleSubmit}>
