@@ -10,12 +10,17 @@ import {
 } from "@/components/ui/breadcrumb";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { useContext } from "react";
+import { themeContext } from "@/components/theme-provider";
+import { Moon, Sun } from "lucide-react";
+import { motion } from "motion/react";
 
 export default function DashboardLayout({
 	children,
 }: {
 	children: React.ReactNode;
 }) {
+	const { theme, toggleTheme } = useContext(themeContext);
 	const location = useLocation();
 	const path = location.pathname
 		.split("/")
@@ -54,6 +59,12 @@ export default function DashboardLayout({
 						</Breadcrumb>
 					</div>
 					<div className="flex items-center gap-4">
+						<motion.button
+							onClick={() => toggleTheme()}
+							className="border-neutral-200 dark:border-neutral-700 hover:bg-neutral-100 transition-colors dark:hover:bg-neutral-800 rounded-lg p-2 border"
+						>
+							{theme === "light" ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4" />}
+						</motion.button>
 						<Button
 							onClick={() => {
 								localStorage.removeItem("token");

@@ -1,7 +1,11 @@
 import { Link } from "react-router-dom";
-import { ArrowRight, Bot, Zap, Shield, GitFork } from "lucide-react";
+import { ArrowRight, Bot, Zap, Shield, GitFork, Moon, Sun } from "lucide-react";
+import { useContext } from "react";
+import { themeContext } from "../components/theme-provider";
+import { motion } from "motion/react";
 
 export default function Landing() {
+	const { theme, toggleTheme } = useContext(themeContext);
 	return (
 		<div className="min-h-screen bg-neutral-50 text-neutral-900 selection:bg-neutral-900/10">
 			{/* Navbar */}
@@ -14,6 +18,12 @@ export default function Landing() {
 						<span>TradeFlow</span>
 					</div>
 					<div className="flex items-center gap-4">
+						<motion.button
+							onClick={() => toggleTheme()}
+							className="border-neutral-200 dark:border-neutral-700 hover:bg-neutral-100 transition-colors dark:hover:bg-neutral-800 rounded-lg p-2 border"
+						>
+							{theme === "light" ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4" />}
+						</motion.button>
 						<Link
 							to="/signin"
 							className="text-sm font-medium hover:text-neutral-600 transition-colors"
