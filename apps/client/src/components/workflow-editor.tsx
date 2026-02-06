@@ -11,8 +11,6 @@ import {
 	type FinalConnectionState,
 	BackgroundVariant,
 	Background,
-	BezierEdge,
-	MarkerType,
 } from "@xyflow/react";
 import { toast } from "sonner";
 import "@xyflow/react/dist/style.css";
@@ -51,7 +49,7 @@ const nodeTypes = {
 
 const edgeTypes = {
 	custom: CustomEdge,
-};	
+};
 
 interface WorkflowEditorProps {
 	workflowId?: string;
@@ -194,25 +192,25 @@ export default function WorkflowEditor({
 	};
 
 	return (
-		<div className="flex flex-col w-full h-screen bg-neutral-50 py-2 px-6">
+		<div className="flex flex-col w-full h-screen bg-background py-2 px-6">
 			{/* Navbar Overlay */}
 			<div className="flex items-center justify-between mb-4">
 				<div>
 					<Button
 						variant="outline"
-						className="bg-white border-neutral-200 hover:bg-neutral-100 text-neutral-900 gap-2"
+						className="bg-background border-border hover:bg-muted text-foreground gap-2"
 						onClick={() => navigate("/dashboard")}
 					>
 						<ArrowLeft className="w-4 h-4" />
 						Back
 					</Button>
 				</div>
-				<div className="flex bg-white/50 backdrop-blur-md p-1 rounded-lg border border-neutral-200">
+				<div className="flex bg-background/50 backdrop-blur-md p-1 rounded-lg border border-border">
 					<Input
 						value={workflowName}
 						onChange={(e) => setWorkflowName(e.target.value)}
 						placeholder="Workflow Name"
-						className="border-none bg-transparent focus-visible:ring-0 w-64 text-center font-medium placeholder:text-neutral-400"
+						className="border-none bg-transparent focus-visible:ring-0 w-64 text-center font-medium placeholder:text-muted-foreground"
 					/>
 				</div>
 				<div className="flex items-center gap-2">
@@ -221,14 +219,14 @@ export default function WorkflowEditor({
 							navigate(`/workflow/${workflowId}/executions`);
 						}}
 						variant="outline"
-						className="bg-white border-neutral-200 hover:bg-neutral-100 text-neutral-900 gap-2"
+						className="bg-background border-border hover:bg-muted text-foreground gap-2"
 					>
 						View Executions
 					</Button>
 					<Button
 						onClick={handleSaveClick}
 						disabled={isSaving}
-						className="bg-neutral-900 text-white hover:bg-neutral-800 gap-2 shadow-sm"
+						className="bg-primary text-primary-foreground hover:bg-primary/90 gap-2 shadow-sm"
 					>
 						{isSaving ? (
 							<Loader2 className="w-4 h-4 animate-spin" />
@@ -241,7 +239,7 @@ export default function WorkflowEditor({
 			</div>
 
 			{/* Flow Canvas */}
-			<div className="flex-1 border-2 border-neutral-200 rounded-xl overflow-hidden bg-neutral-100 mb-4">
+			<div className="flex-1 border-2 border-border rounded-xl overflow-hidden bg-muted/10 mb-4">
 				<ReactFlow
 					nodes={nodes}
 					edges={edges}
@@ -252,7 +250,7 @@ export default function WorkflowEditor({
 					onConnect={onConnect}
 					onConnectEnd={onConnectEnd}
 					fitView
-					className="bg-neutral-50"
+					className="bg-muted/50"
 				>
 					{/* Background or other controls could go here */}
 					<Background
