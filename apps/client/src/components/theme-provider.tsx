@@ -2,8 +2,8 @@ import React, { createContext, useEffect, useState } from "react";
 
 type ThemeType = "light" | "dark" | "system";
 export const themeContext = createContext({
-  theme: "",
-  toggleTheme: () => {},
+	theme: "",
+	toggleTheme: () => {},
 });
 export default function ThemeProvider({
 	children,
@@ -39,9 +39,9 @@ export default function ThemeProvider({
 		localStorage.setItem("theme", next);
 	};
 
-  return (
-    <themeContext.Provider value={{ theme, toggleTheme }}>
-      {children}
-    </themeContext.Provider>
-  );
+	return (
+		<themeContext.Provider value={{ theme, toggleTheme }}>
+			{children}
+		</themeContext.Provider>
+	);
 }
