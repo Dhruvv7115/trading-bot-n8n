@@ -13,25 +13,27 @@ export default function Backpack({
 }) {
 	const { type, quantity, symbol } = data.metaData;
 	return (
-		<div className="bg-white rounded-2xl outline-[1.5px] outline-gray-400 -outline-offset-[1.5px] p-4 shadow-md relative">
+		<div className="bg-card rounded-2xl outline-[1.5px] outline-border -outline-offset-[1.5px] p-4 shadow-md relative">
 			<div className="flex items-center justify-between mb-2 gap-4">
-				<h2 className="font-bold text-lg text-black">Backpack Trade</h2>
+				<h2 className="font-bold text-lg text-card-foreground">
+					Backpack Trade
+				</h2>
 				<img
 					src="../../assets/logos/backpack.png"
 					alt="backpack"
 					className="size-5 rounded-full"
 				/>
 			</div>
-			<div className="text-neutral-800 font-semibold text-sm">
-				<span className="font-light text-neutral-500">Type: </span>
+			<div className="text-foreground font-semibold text-sm">
+				<span className="font-light text-muted-foreground">Type: </span>
 				{type}
 			</div>
-			<div className="text-neutral-800 font-semibold text-sm">
-				<span className="font-light text-neutral-500">Quantity: </span>
+			<div className="text-foreground font-semibold text-sm">
+				<span className="font-light text-muted-foreground">Quantity: </span>
 				{quantity}
 			</div>
-			<div className="text-neutral-800 font-semibold text-sm">
-				<span className="font-light text-neutral-500">Symbol: </span>
+			<div className="text-foreground font-semibold text-sm">
+				<span className="font-light text-muted-foreground">Symbol: </span>
 				{symbol}
 			</div>
 			<Handle
@@ -39,7 +41,7 @@ export default function Backpack({
 				position={Position.Left}
 				isConnectable={isConnectable}
 				style={{
-					backgroundColor: "#99a1af",
+					backgroundColor: "var(--muted-foreground)",
 					border: "none",
 					width: "0.5em",
 					height: "0.8em",
@@ -51,7 +53,7 @@ export default function Backpack({
 				position={Position.Right}
 				isConnectable={isConnectable}
 				style={{
-					backgroundColor: "#99a1af",
+					backgroundColor: "var(--muted-foreground)",
 					border: "none",
 					width: "0.5em",
 					height: "0.5em",
