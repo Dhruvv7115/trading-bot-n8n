@@ -1,13 +1,7 @@
-import {
-	CheckCircle2,
-	XCircle,
-	Clock,
-	PlayCircle,
-	AlertCircle,
-} from "lucide-react";
+import { CheckCircle2, XCircle, Clock, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { executionApi } from "@/lib/api";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
 // Helper function to get status styling
@@ -16,35 +10,35 @@ const getStatusConfig = (status: string) => {
 		case "SUCCESS":
 			return {
 				icon: CheckCircle2,
-				bgColor: "bg-green-50",
-				textColor: "text-green-700",
-				borderColor: "border-green-200",
+				bgColor: "bg-green-50 dark:bg-green-900/20",
+				textColor: "text-green-700 dark:text-green-400",
+				borderColor: "border-green-200 dark:border-green-900/50",
 				label: "Success",
 			};
 		case "FAILURE":
 		case "ERROR":
 			return {
 				icon: XCircle,
-				bgColor: "bg-red-50",
-				textColor: "text-red-700",
-				borderColor: "border-red-200",
+				bgColor: "bg-red-50 dark:bg-red-900/20",
+				textColor: "text-red-700 dark:text-red-400",
+				borderColor: "border-red-200 dark:border-red-900/50",
 				label: "Failed",
 			};
 		case "PENDING":
 		case "RUNNING":
 			return {
 				icon: Clock,
-				bgColor: "bg-blue-50",
-				textColor: "text-blue-700",
-				borderColor: "border-blue-200",
+				bgColor: "bg-blue-50 dark:bg-blue-900/20",
+				textColor: "text-blue-700 dark:text-blue-400",
+				borderColor: "border-blue-200 dark:border-blue-900/50",
 				label: status === "RUNNING" ? "Running" : "Pending",
 			};
 		default:
 			return {
 				icon: AlertCircle,
-				bgColor: "bg-gray-50",
-				textColor: "text-gray-700",
-				borderColor: "border-gray-200",
+				bgColor: "bg-neutral-50 dark:bg-neutral-800",
+				textColor: "text-neutral-700 dark:text-neutral-300",
+				borderColor: "border-neutral-200 dark:border-neutral-700",
 				label: status,
 			};
 	}
@@ -77,11 +71,13 @@ export default function Executions() {
 		loadExecutions();
 	}, [id]);
 	return (
-		<div className="w-full min-h-screen flex flex-col justify-start items-start p-6 gap-6">
+		<div className="w-full min-h-screen flex flex-col justify-start items-start p-6 gap-6 bg-background text-foreground">
 			<div className="flex gap-2 items-center w-full justify-between p-2">
 				<div className="flex flex-col gap-1">
-					<h1 className="text-2xl md:text-3xl font-bold">Executions</h1>
-					<p className="text-sm text-neutral-500">Workflow ID: {id}</p>
+					<h1 className="text-2xl md:text-3xl font-bold tracking-tight">
+						Executions
+					</h1>
+					<p className="text-sm text-muted-foreground">Workflow ID: {id}</p>
 				</div>
 				<div className="flex gap-2 items-start">
 					<Button
@@ -104,7 +100,7 @@ export default function Executions() {
 			</div>
 			<div className="w-full flex flex-col gap-4 items-center justify-center">
 				{executions.length !== 0 ? (
-					<div className="border border-neutral-200 rounded-lg overflow-hidden w-full">
+					<div className="border border-border rounded-lg overflow-hidden w-full bg-card">
 						{executions.map((e: any, i: number) => {
 							const statusConfig = getStatusConfig(e?.status);
 							const StatusIcon = statusConfig.icon;
@@ -113,10 +109,10 @@ export default function Executions() {
 							return (
 								<div
 									key={e._id}
-									className="flex items-center gap-4 p-4 border-b border-neutral-100 last:border-b-0 hover:bg-neutral-50 transition-colors cursor-pointer"
+									className="flex items-center gap-4 p-4 border-b border-border last:border-b-0 hover:bg-muted/50 transition-colors cursor-pointer"
 								>
 									{/* Number */}
-									<div className="shrink-0 w-8 text-sm font-medium text-neutral-500">
+									<div className="shrink-0 w-8 text-sm font-medium text-muted-foreground">
 										{executions.length - i}
 									</div>
 
@@ -136,7 +132,7 @@ export default function Executions() {
 
 									{/* Time Info */}
 									<div className="flex-1 min-w-0">
-										<div className="text-sm text-neutral-900">
+										<div className="text-sm text-foreground">
 											{new Date(e.createdAt).toLocaleString("en-US", {
 												month: "short",
 												day: "numeric",
@@ -144,10 +140,10 @@ export default function Executions() {
 												minute: "2-digit",
 											})}
 										</div>
-										<div className="text-xs text-neutral-500 truncate">
+										<div className="text-xs text-muted-foreground truncate">
 											{e.mode && <span className="capitalize">{e.mode}</span>}
 											{e.error && (
-												<span className="text-red-600 ml-2">
+												<span className="text-destructive ml-2">
 													{e.error.message}
 												</span>
 											)}
@@ -155,7 +151,7 @@ export default function Executions() {
 									</div>
 
 									{/* Duration */}
-									<div className="shrink-0 text-xs text-neutral-500 font-mono">
+									<div className="shrink-0 text-xs text-muted-foreground font-mono">
 										{duration}
 									</div>
 								</div>
@@ -163,9 +159,9 @@ export default function Executions() {
 						})}
 					</div>
 				) : (
-					<div className="flex flex-col items-center justify-center py-12 border border-dashed border-neutral-200 rounded-lg">
-						<Clock className="w-10 h-10 text-neutral-300 mb-3" />
-						<p className="text-sm text-neutral-500">No executions yet</p>
+					<div className="flex flex-col items-center justify-center py-12 border border-dashed border-border rounded-lg">
+						<Clock className="w-10 h-10 text-muted-foreground mb-3" />
+						<p className="text-sm text-muted-foreground">No executions yet</p>
 					</div>
 				)}
 			</div>

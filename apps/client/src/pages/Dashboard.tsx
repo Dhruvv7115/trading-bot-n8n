@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { workflowApi } from "../lib/api";
 import {
 	Plus,
@@ -22,7 +22,6 @@ interface Workflow {
 }
 
 export default function Dashboard() {
-	const navigate = useNavigate();
 	const [workflows, setWorkflows] = useState<Workflow[]>([]);
 	const [loading, setLoading] = useState(true);
 	const [search, setSearch] = useState("");
@@ -60,32 +59,32 @@ export default function Dashboard() {
 	);
 
 	return (
-		<div className="min-h-screen bg-neutral-50 text-neutral-900">
+		<div className="min-h-screen bg-background text-foreground">
 			<main className="container mx-auto px-6 py-8">
 				{/* Actions Bar */}
 				<div className="flex flex-col md:flex-row gap-4 justify-between items-start md:items-center mb-8">
 					<div>
-						<h1 className="text-2xl font-bold mb-1 text-neutral-900">
+						<h1 className="text-2xl font-bold mb-1 tracking-tight">
 							My Workflows
 						</h1>
-						<p className="text-neutral-500 text-sm">
+						<p className="text-muted-foreground text-sm">
 							Manage and monitor your trading strategies
 						</p>
 					</div>
 					<div className="flex gap-3 w-full md:w-auto">
 						<div className="relative flex-1 md:w-64">
-							<Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-400" />
+							<Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
 							<input
 								type="text"
 								placeholder="Search workflows..."
-								className="w-full pl-10 pr-4 py-2 bg-white border border-neutral-200 rounded-lg text-sm text-neutral-900 focus:outline-none focus:ring-2 focus:ring-neutral-900/10 transition-all"
+								className="w-full pl-10 pr-4 py-2 bg-background border border-border rounded-lg text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring/20 transition-all"
 								value={search}
 								onChange={(e) => setSearch(e.target.value)}
 							/>
 						</div>
 						<Link
 							to="/workflow/create"
-							className="flex items-center gap-2 px-4 py-2 bg-neutral-900 hover:bg-neutral-800 text-white text-sm font-semibold rounded-lg transition-colors"
+							className="flex items-center gap-2 px-4 py-2 bg-primary hover:bg-primary/90 text-primary-foreground text-sm font-medium rounded-lg transition-colors"
 						>
 							<Plus className="w-4 h-4" />
 							New Workflow
@@ -96,22 +95,22 @@ export default function Dashboard() {
 				{/* Content */}
 				{loading ? (
 					<div className="flex items-center justify-center py-20">
-						<Loader2 className="w-8 h-8 text-neutral-400 animate-spin" />
+						<Loader2 className="w-8 h-8 text-muted-foreground animate-spin" />
 					</div>
 				) : filteredWorkflows.length === 0 ? (
-					<div className="text-center py-20 border border-dashed border-neutral-200 rounded-2xl bg-white/50">
-						<div className="w-16 h-16 bg-neutral-100 rounded-full flex items-center justify-center mx-auto mb-4">
-							<Workflow className="w-8 h-8 text-neutral-400" />
+					<div className="text-center py-20 border border-dashed border-border rounded-2xl bg-card/50">
+						<div className="w-16 h-16 bg-secondary rounded-full flex items-center justify-center mx-auto mb-4">
+							<Workflow className="w-8 h-8 text-muted-foreground" />
 						</div>
-						<h3 className="text-lg font-medium text-neutral-900 mb-1">
+						<h3 className="text-lg font-medium text-foreground mb-1">
 							No workflows yet
 						</h3>
-						<p className="text-neutral-500 mb-6">
+						<p className="text-muted-foreground mb-6">
 							Create your first trading workflow to get started.
 						</p>
 						<Link
 							to="/workflow/create"
-							className="inline-flex items-center gap-2 px-6 py-2.5 bg-neutral-900 text-white font-bold rounded-lg hover:bg-neutral-800 transition-colors"
+							className="inline-flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground font-medium rounded-lg hover:bg-primary/90 transition-colors"
 						>
 							<Plus className="w-4 h-4" />
 							Create Workflow
@@ -123,11 +122,11 @@ export default function Dashboard() {
 							<Link
 								key={workflow._id}
 								to={`/workflow/${workflow._id}`}
-								className="group block p-5 rounded-xl bg-white border border-neutral-200 hover:border-neutral-300 hover:shadow-sm transition-all"
+								className="group block p-5 rounded-xl bg-card text-card-foreground border border-border hover:border-ring/50 hover:shadow-sm transition-all"
 							>
 								<div className="flex justify-between items-start mb-4">
 									<div
-										className={`w-10 h-10 rounded-lg flex items-center justify-center rotate-90 ${workflow.active ? "bg-neutral-900 text-white" : "bg-neutral-100 text-neutral-400"}`}
+										className={`w-10 h-10 rounded-lg flex items-center justify-center rotate-90 ${workflow.active ? "bg-primary text-primary-foreground" : "bg-secondary text-muted-foreground"}`}
 									>
 										<GitFork className="w-5 h-5" />
 									</div>
@@ -135,23 +134,23 @@ export default function Dashboard() {
 										onClick={(e) => handleDelete(e, workflow._id)}
 										variant="ghost"
 										size="sm"
-										className="text-neutral-400 hover:text-red-600 hover:bg-red-50"
+										className="text-muted-foreground hover:text-destructive hover:bg-destructive/10"
 									>
 										<Trash2 className="w-4 h-4" />
 									</Button>
 								</div>
 
-								<h3 className="text-lg font-semibold text-neutral-900 mb-1 group-hover:text-neutral-700 transition-colors">
+								<h3 className="text-lg font-semibold mb-1 group-hover:text-primary transition-colors">
 									{workflow.name}
 								</h3>
-								<p className="text-sm text-neutral-500 line-clamp-2 mb-4 h-10">
+								<p className="text-sm text-muted-foreground line-clamp-2 mb-4 h-10">
 									{workflow.description || "No description provided."}
 								</p>
 
-								<div className="flex items-center gap-4 text-xs text-neutral-500 border-t border-neutral-100 pt-4">
+								<div className="flex items-center gap-4 text-xs text-muted-foreground border-t border-border pt-4">
 									<div className="flex items-center gap-1.5">
 										<div
-											className={`w-1.5 h-1.5 rounded-full ${workflow.active ? "bg-neutral-900" : "bg-neutral-300"}`}
+											className={`w-1.5 h-1.5 rounded-full ${workflow.active ? "bg-primary" : "bg-muted-foreground"}`}
 										/>
 										{workflow.active ? "Active" : "Inactive"}
 									</div>
