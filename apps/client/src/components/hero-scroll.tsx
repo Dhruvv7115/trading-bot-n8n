@@ -2,25 +2,25 @@ import { ContainerScroll } from "@/components/ui/container-scroll-animation";
 
 export function HeroScrollDemo() {
 	return (
-		<div className="flex flex-col overflow-hidden pb-[500px] pt-[1000px]">
+		<div className="flex flex-col overflow-hidden">
 			<ContainerScroll
 				titleComponent={
 					<>
-						<h1 className="text-4xl font-semibold text-black dark:text-white">
-							Unleash the power of <br />
-							<span className="text-4xl md:text-[6rem] font-bold mt-1 leading-none">
-								Scroll Animations
+						<h1 className="text-3xl font-semibold text-black dark:text-white">
+							Automated <br />
+							<span className="text-4xl md:text-[5rem] font-bold mt-1 leading-none">
+								Trading workflows
 							</span>
 						</h1>
 					</>
 				}
 			>
 				<img
-					src={`https://ui.aceternity.com/_next/image?url=%2Flinear.webp&w=3840&q=75`}
+					src="./assets/landing/workflow-light.png"
 					alt="hero"
 					height={720}
 					width={1400}
-					className="mx-auto rounded-2xl object-cover h-full object-top-left"
+					className="mx-auto rounded-2xl object-cover h-full object-center"
 					draggable={false}
 				/>
 			</ContainerScroll>

@@ -4,6 +4,7 @@ import { FeatureCard, type FeatureCardType } from "./feature-card";
 import MacApp from "./mac-app";
 import { motion } from "motion/react";
 import { useState } from "react";
+import { HeroScrollDemo } from "./hero-scroll";
 const featuredCards: FeatureCardType[] = [
 	{
 		icon: <Zap className="w-6 h-6 text-primary" />,
@@ -50,7 +51,8 @@ export default function LandingHero() {
 					</Link>
 				</div>
 			</div>
-			<MacApp />
+			{/* <MacApp /> */}
+			<HeroScrollDemo />
 
 			{/* Feature Grid */}
 			<div className="container mx-auto mt-32 grid md:grid-cols-3 gap-6">
