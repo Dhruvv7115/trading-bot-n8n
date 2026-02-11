@@ -8,7 +8,7 @@ export default function FeatureCard({
 	description: string;
 }) {
 	return (
-		<div className="p-6 rounded-2xl bg-card text-card-foreground border border-border hover:border-ring/50 transition-colors shadow-sm">
+		<div className="p-6 rounded-2xl bg-card dark:bg-background text-card-foreground dark:border border-border hover:ring-4 ring-primary/50 transition-colors">
 			<div className="w-12 h-12 rounded-xl bg-secondary flex items-center justify-center mb-4 text-primary">
 				{icon}
 			</div>
