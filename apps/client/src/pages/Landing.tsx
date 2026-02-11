@@ -8,7 +8,6 @@ export default function Landing() {
 			<div className="min-h-screen bg-background text-foreground selection:bg-primary/20">
 				{/* Navbar */}
 				<LandingNav />
-
 				{/* Hero Section */}
 				<LandingHero />
 			</div>
