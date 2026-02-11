@@ -1,10 +1,32 @@
 import { ArrowRight, Bot, Shield, Zap } from "lucide-react";
-import React from "react";
 import { Link } from "react-router-dom";
-import FeatureCard from "./feature-card";
+import { FeatureCard, type FeatureCardType } from "./feature-card";
 import MacApp from "./mac-app";
+import { motion } from "motion/react";
+import { useState } from "react";
+const featuredCards: FeatureCardType[] = [
+	{
+		icon: <Zap className="w-6 h-6 text-primary" />,
+		title: "Lightning Fast",
+		description:
+			"Execute trades in milliseconds with our optimized execution engine.",
+	},
+	{
+		icon: <Bot className="w-6 h-6 text-primary" />,
+		title: "Visual Builder",
+		description:
+			"Drag and drop nodes to create complex trading logic without writing code.",
+	},
+	{
+		icon: <Shield className="w-6 h-6 text-primary" />,
+		title: "Secure & Reliable",
+		description:
+			"Enterprise-grade security for your API keys and execution environments.",
+	},
+];
 
 export default function LandingHero() {
+	const [hoveredIdx, setHoveredIdx] = useState<number | null>(null);
 	return (
 		<main className="relative pt-32 pb-20 px-6 overflow-hidden">
 			<div className="absolute top-20 left-1/2 -translate-x-1/2 w-[500px] h-[500px] bg-primary/20 rounded-full blur-[100px] -z-10" />
@@ -32,21 +54,32 @@ export default function LandingHero() {
 
 			{/* Feature Grid */}
 			<div className="container mx-auto mt-32 grid md:grid-cols-3 gap-6">
-				<FeatureCard
-					icon={<Zap className="w-6 h-6 text-primary" />}
-					title="Lightning Fast"
-					description="Execute trades in milliseconds with our optimized execution engine."
-				/>
-				<FeatureCard
-					icon={<Bot className="w-6 h-6 text-primary" />}
-					title="Visual Builder"
-					description="Drag and drop nodes to create complex trading logic without writing code."
-				/>
-				<FeatureCard
-					icon={<Shield className="w-6 h-6 text-primary" />}
-					title="Secure & Reliable"
-					description="Enterprise-grade security for your API keys and execution environments."
-				/>
+				{featuredCards.map(
+					({ title, icon, description }: FeatureCardType, idx: number) => (
+						<motion.div
+							onHoverStart={() => setHoveredIdx(idx)}
+							onHoverEnd={() => setHoveredIdx(null)}
+							className="relative group"
+						>
+							<FeatureCard
+								key={title}
+								description={description}
+								title={title}
+								icon={icon}
+							/>
+							{hoveredIdx === idx && (
+								<motion.span
+									className="absolute -inset-2 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity bg-primary/10 p-2"
+									layoutId="hovered-span"
+									transition={{
+										duration: 0.2,
+										ease: "circInOut",
+									}}
+								/>
+							)}
+						</motion.div>
+					),
+				)}
 			</div>
 		</main>
 	);

@@ -1,4 +1,10 @@
-export default function FeatureCard({
+export interface FeatureCardType {
+	title: string;
+	description: string;
+	icon: React.ReactElement;
+}
+
+export function FeatureCard({
 	icon,
 	title,
 	description,
@@ -8,7 +14,7 @@ export default function FeatureCard({
 	description: string;
 }) {
 	return (
-		<div className="p-6 rounded-2xl bg-card dark:bg-background text-card-foreground dark:border border-border hover:ring-4 ring-primary/50 transition-colors">
+		<div className="p-6 rounded-2xl bg-card dark:bg-background text-card-foreground dark:border border-border transition-colors relative z-10">
 			<div className="w-12 h-12 rounded-xl bg-secondary flex items-center justify-center mb-4 text-primary">
 				{icon}
 			</div>
