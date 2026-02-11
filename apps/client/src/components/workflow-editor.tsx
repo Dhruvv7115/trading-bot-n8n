@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useContext } from "react";
 import {
 	ReactFlow,
 	addEdge,
@@ -38,6 +38,7 @@ import {
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { CustomEdge } from "./custom-edge";
+import { themeContext } from "./theme-provider";
 
 const nodeTypes = {
 	time: Time,
@@ -68,6 +69,7 @@ export default function WorkflowEditor({
 	onSave,
 	isSaving = false,
 }: WorkflowEditorProps) {
+	const { theme } = useContext(themeContext);		
 	const navigate = useNavigate();
 	const [nodes, setNodes] = useState<NodeType[]>(initialNodes);
 	const [edges, setEdges] = useState<Edge[]>(initialEdges);
@@ -254,8 +256,8 @@ export default function WorkflowEditor({
 				>
 					{/* Background or other controls could go here */}
 					<Background
-						color="#ccc"
-						size={2}
+						color={theme === "dark" ? "#525252" : "#b2b2b2"}
+						size={3}
 						variant={BackgroundVariant.Dots}
 					/>
 				</ReactFlow>
